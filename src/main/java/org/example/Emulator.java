@@ -33,6 +33,8 @@ public class Emulator {
             int a, b;
 
             // Use value if a register isn't specified
+            //TODO:
+            // [ ] Criar metodo para substituir isso
             if(firstOpLower >= 0x20)
                 a = firstOpHigher;
             else
@@ -77,8 +79,6 @@ public class Emulator {
 
             registers[thirdOp] = a-b;
 
-
-
             if(instruction == 0x04){
                 registers[thirdOp]++;
                 correctValue++;
@@ -88,6 +88,23 @@ public class Emulator {
                 carry = true;
                 registers[thirdOp] = Integer.MIN_VALUE;
             }
+        }
+
+        else if(instruction == 0x06){
+
+            int a, b;
+
+            if(firstOpLower < 0x20)
+                a = registers[firstOpLower];
+            else
+                a = firstOpHigher;
+
+            if(secondOpLower < 0x20)
+                b = registers[secondOpLower];
+            else
+                b = secondOpHigher;
+
+            registers[thirdOp] = a&b;
         }
 
     }
@@ -132,6 +149,17 @@ public class Emulator {
         memory[5] = (byte)0x00;
         executeInstruction(memory[pc]);
         System.out.println(registers[0]);
+
+        memory[0]= 0x06;
+        memory[1] = (byte)0xFF;
+        memory[2] = (byte)0b01111010;
+
+        memory[3] = (byte)0xFF;
+        memory[4] = (byte)0b00101010;
+
+        memory[5] = (byte)0x00;
+        executeInstruction(memory[pc]);
+        System.out.println(Integer.toBinaryString(registers[0]));
     }
 
 }
