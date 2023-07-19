@@ -29,11 +29,18 @@ public class Emulator {
         switch (instruction){
             case 0x01: // ADD
 //                firstOp = ((memory[pc+1] & 0xFF)<<8) | (memory[pc+2] & 0xFF); //0xFF -> 0xFF00
-                int a = firstOpLower, b = secondOpLower;
+                int a, b;
+
+                // Use value if a register isn't specified
                 if(firstOpLower >= 0x20)
                     a = firstOpHigher;
+                else
+                    a = registers[firstOpLower];
+
                 if(secondOpLower >= 0x20)
                     b = secondOpHigher;
+                else
+                    b = registers[secondOpLower];
                 registers[thirdOp] = a+b;
         }
     }
@@ -46,10 +53,22 @@ public class Emulator {
         memory[3] = (byte)0xFF;
         memory[4] = (byte)0x01;
         memory[5] = (byte)0x00;
+
         executeInstruction(memory[pc]);
 
         System.out.println(registers[0]);
 
+
+        registers[1] = 10;
+        registers[2] = 1;
+
+        memory[0]= 0x01;
+        memory[1] = (byte)0x01;
+        memory[2] = (byte)0x00;
+        memory[3] = (byte)0x02;
+        memory[4] = (byte)0x00;
+        memory[5] = (byte)0x00;
+        System.out.println(registers[0]);
     }
 
 }
