@@ -41,7 +41,15 @@ public class Emulator {
                     b = secondOpHigher;
                 else
                     b = registers[secondOpLower];
+
+                long correctvalue = a+b;
+
                 registers[thirdOp] = a+b;
+                if(a+b != correctvalue) {
+                    carry = true;
+                    registers[thirdOp] = Integer.MAX_VALUE;
+                }
+
         }
     }
 
