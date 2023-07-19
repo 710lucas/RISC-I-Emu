@@ -77,9 +77,12 @@ public class Emulator {
 
 
     public static int getOperandValue(int lower, int higher, int cap){
-        if(lower<cap)
-            return lower;
-        return registers[higher];
+//        System.out.println("lower: "+lower);
+//        System.out.println("higher: "+higher);
+
+        if(lower>=cap)
+            return higher;
+        return registers[lower];
     }
 
     public static void main(String[] args) {
