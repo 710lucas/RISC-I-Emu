@@ -28,22 +28,11 @@ public class Emulator {
 
         thirdOp = memory[pc+5] & 0xFF;
 
+        int a = getOperandValue(firstOpLower, firstOpHigher, 0x20);
+        int b = getOperandValue(secondOpLower, secondOpHigher, 0x20);
+
         //                 ADD                    ADDC
         if(instruction  == 0x01 || instruction == 0x02){
-            int a, b;
-
-            // Use value if a register isn't specified
-            //TODO:
-            // [ ] Criar metodo para substituir isso
-            if(firstOpLower >= 0x20)
-                a = firstOpHigher;
-            else
-                a = registers[firstOpLower];
-
-            if(secondOpLower >= 0x20)
-                b = secondOpHigher;
-            else
-                b = registers[secondOpLower];
 
             long correctvalue = a+b;
 
@@ -63,17 +52,6 @@ public class Emulator {
 
         // SUB                                        SUBC
         else if(instruction == 0x03 || instruction == 0x04){
-            int a, b;
-
-            if(firstOpLower >= 0x20)
-                a = firstOpHigher;
-            else
-                a = registers[firstOpLower];
-
-            if(secondOpLower >= 0x20)
-                b = secondOpHigher;
-            else
-                b = registers[secondOpLower];
 
             long correctValue = a-b;
 
@@ -92,21 +70,16 @@ public class Emulator {
 
         else if(instruction == 0x06){
 
-            int a, b;
-
-            if(firstOpLower < 0x20)
-                a = registers[firstOpLower];
-            else
-                a = firstOpHigher;
-
-            if(secondOpLower < 0x20)
-                b = registers[secondOpLower];
-            else
-                b = secondOpHigher;
-
             registers[thirdOp] = a&b;
         }
 
+    }
+
+
+    public static int getOperandValue(int lower, int higher, int cap){
+        if(lower<cap)
+            return lower;
+        return registers[higher];
     }
 
     public static void main(String[] args) {
