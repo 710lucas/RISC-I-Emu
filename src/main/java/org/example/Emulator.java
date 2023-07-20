@@ -68,10 +68,37 @@ public class Emulator {
             }
         }
 
+        // AND
         else if(instruction == 0x06){
-
             registers[thirdOp] = a&b;
         }
+
+        //OR
+        else if(instruction == 0x07){
+            registers[thirdOp] = a|b;
+        }
+
+        //XOR
+        else if(instruction == 0x08){
+            registers[thirdOp] = a^b;
+        }
+
+        //SLL Shift Left
+        else if(instruction == 0x09){
+            registers[thirdOp] = a << b;
+        }
+
+        //Right shift logical
+        else if(instruction == 0x0a){
+            registers[thirdOp] = a >>> b;
+        }
+
+        //Right shift A.
+        else if(instruction == 0x0b){
+            registers[thirdOp] = a >> b;
+        }
+
+
 
     }
 
