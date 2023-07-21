@@ -98,6 +98,10 @@ public class Emulator {
             registers[thirdOp] = a >> b;
         }
 
+        // LDL
+        else if(instruction == 0x0c){
+            registers[thirdOp] = memory[a+b];
+        }
 
 
     }
@@ -163,6 +167,19 @@ public class Emulator {
         memory[5] = (byte)0x00;
         executeInstruction(memory[pc]);
         System.out.println(Integer.toBinaryString(registers[0]));
+
+        memory[0x0f] = 0x0c;
+        memory[0]= 0x0c;
+        memory[1] = (byte)0xFF;
+        memory[2] = (byte)0x0f;
+
+        memory[3] = (byte)0xFF;
+        memory[4] = (byte)0x00;
+
+        memory[5] = (byte)0x0A;
+        executeInstruction(memory[pc]);
+        System.out.println(Integer.toHexString(registers[0x0A]));
+
     }
 
 }
