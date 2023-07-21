@@ -38,7 +38,7 @@ public class Emulator {
 
             registers[thirdOp] = a+b;
 
-            if(instruction == 0x02) {
+            if(instruction == 0x02 && carry) {
                 registers[thirdOp]++;
                 correctvalue++;
             }
@@ -57,9 +57,9 @@ public class Emulator {
 
             registers[thirdOp] = a-b;
 
-            if(instruction == 0x04){
-                registers[thirdOp]++;
-                correctValue++;
+            if(instruction == 0x04 && carry){
+                registers[thirdOp]--;
+                correctValue--;
             }
 
             if(registers[thirdOp] != correctValue){
@@ -70,7 +70,7 @@ public class Emulator {
 
         // AND
         else if(instruction == 0x06){
-            registers[thirdOp] = a&b;
+            registers[thirdOp] = ((a)&(b));
         }
 
         //OR
@@ -100,10 +100,40 @@ public class Emulator {
 
         // LDL
         else if(instruction == 0x0c){
-            registers[thirdOp] = memory[a+b];
+
+            byte[] by = {memory[a+b], memory[a+b+1], memory[a+b+2], memory[a+b+3]};
+            registers[thirdOp] = bytesToInt(by);
+
+        }
+
+        //STL
+        else if(instruction == 0x10){
+//            memory[a+b] = registers[thirdOp];
+            byte[] bytes = intToBytes(registers[thirdOp]);
+            for(int i = 0; i<bytes.length; i++){
+                memory[a+b+i] = bytes[i];
+            }
         }
 
 
+    }
+
+    public static byte[] intToBytes(int integer){
+        byte[] out = new byte[4];
+        out[0] = (byte)((integer >> 24)&0xFF);
+        out[1] = (byte)((integer >> 16)&0xFF);
+        out[2] = (byte)((integer >> 8)&0xFF);
+        out[3] = (byte)(integer&0xFF);
+        return out;
+    }
+
+    public static int bytesToInt(byte[] bytes) {
+        int out = bytes[0];
+        for(int i = 1; i<bytes.length; i++){
+            out = out<<8;
+            out = out| (bytes[i]);
+        }
+        return out;
     }
 
 
@@ -117,68 +147,121 @@ public class Emulator {
     }
 
     public static void main(String[] args) {
+
+
         pc = 0;
-        memory[0]= 0x01;
-        memory[1] = (byte)0xFF;
-        memory[2] = (byte)0x0A;
 
-        memory[3] = (byte)0xFF;
-        memory[4] = (byte)0x01;
 
-        memory[5] = (byte)0x00;
+        /*                  ADD                 */
+        memory[0] = 0x01;
 
+        //Primeiro operando
+        memory[1] = (byte) 0xFF;
+        memory[2] = 10;
+
+        //Segundo operando
+        memory[3] = (byte) 0xFF;
+        memory[4] = 5;
+
+        //Terceiro operando (em qual registrador será salvo a soma)
+        memory[5] = 0;
+        executeInstruction(memory[pc]);
+        System.out.println("A adição entre 10 e 5 é: "+registers[0]);
+        //==============================================================
+
+
+        /*                  SUB                 */
+        memory[0] = 0x03;
+
+        //Primeiro operando
+        memory[1] = (byte) 0xFF;
+        memory[2] = 10;
+
+        //Segundo operando
+        memory[3] = (byte) 0xFF;
+        memory[4] = 5;
+
+        //Terceiro operando (em qual registrador será salvo a subtração)
+        memory[5] = 1;
+        executeInstruction(memory[pc]);
+        System.out.println("A subtração entre 10 e 5 é: "+registers[1]);
+        //==============================================================
+
+        /*                  AND                 */
+        memory[0] = 0x06;
+
+        //Primeiro operando
+        memory[1] = (byte) 0x20;
+        memory[2] = 0b00010100;
+
+        //Segundo operando
+        memory[3] = (byte) 0x20;
+        memory[4] = 0b00011100;
+
+        //Terceiro operando (em qual registrador será salvo a operação entre o primeiro&segundo)
+        memory[5] = 10;
+        executeInstruction(memory[pc]);
+        System.out.println("A operação and resultou em: "+ Integer.toBinaryString(registers[10]));
+        //==============================================================
+
+
+        /*                  OR                 */
+        memory[0] = 0x07;
+
+        //Primeiro operando
+        memory[1] = (byte) 0x20;
+        memory[2] = 0b00010100;
+
+        //Segundo operando
+        memory[3] = (byte) 0x20;
+        memory[4] = 0b00011100;
+
+        //Terceiro operando (em qual registrador será salvo a operação entre primeiro|segundo)
+        memory[5] = 10;
+        executeInstruction(memory[pc]);
+        System.out.println("A operação and resultou em: "+ Integer.toBinaryString(registers[10]));
+        //==============================================================
+
+        /*                  STL - STORE                 */
+        registers[1] = 69;
+        memory[0] = 0x10;
+
+        //Primeiro operando
+        memory[1] = (byte) 0xFF;
+        memory[2] = 14;
+
+        //Segundo operando
+        memory[3] = (byte) 0xFF;
+        memory[4] = 1;
+
+        //Primeiro operando e segundo operando serão somados para indicar o lugar da memória onde
+        //será armazenado o valor no registrador no terceiro operando
+
+        //Terceiro operando
+        memory[5] = 1;
         executeInstruction(memory[pc]);
 
-        System.out.println(registers[0]);
 
+        //==============================================================
 
-        registers[1] = 10;
-        registers[2] = 1;
+        /*                  LDL - LOAD                 */
+        memory[0] = 0x0c;
 
-        memory[0]= 0x01;
-        memory[1] = (byte)0x01;
-        memory[2] = (byte)0x00;
+        //Primeiro operando
+        memory[1] = (byte) 0x20;
+        memory[2] = 13;
 
-        memory[3] = (byte)0x02;
-        memory[4] = (byte)0x00;
+        //Segundo operando
+        memory[3] = (byte) 0x20;
+        memory[4] = 2;
 
-        memory[5] = (byte)0x00;
+        //Terceiro operando (em qual registrador será salvo os dados em registradores[primeiro+segundo])
+        memory[5] = 10;
         executeInstruction(memory[pc]);
-        System.out.println(registers[0]);
+        System.out.println("A operação and resultou em: "+ (registers[10]));
+        //==============================================================
 
-        memory[0]= 0x03;
-        memory[1] = (byte)0xFF;
-        memory[2] = (byte)0x0A;
 
-        memory[3] = (byte)0xFF;
-        memory[4] = (byte)0x01;
-
-        memory[5] = (byte)0x00;
-        executeInstruction(memory[pc]);
-        System.out.println(registers[0]);
-
-        memory[0]= 0x06;
-        memory[1] = (byte)0xFF;
-        memory[2] = (byte)0b01111010;
-
-        memory[3] = (byte)0xFF;
-        memory[4] = (byte)0b00101010;
-
-        memory[5] = (byte)0x00;
-        executeInstruction(memory[pc]);
-        System.out.println(Integer.toBinaryString(registers[0]));
-
-        memory[0x0f] = 0x0c;
-        memory[0]= 0x0c;
-        memory[1] = (byte)0xFF;
-        memory[2] = (byte)0x0f;
-
-        memory[3] = (byte)0xFF;
-        memory[4] = (byte)0x00;
-
-        memory[5] = (byte)0x0A;
-        executeInstruction(memory[pc]);
-        System.out.println(Integer.toHexString(registers[0x0A]));
 
     }
 
