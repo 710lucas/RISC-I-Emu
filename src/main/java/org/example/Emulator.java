@@ -129,6 +129,17 @@ public class Emulator {
             }
         }
 
+        //CALL
+        else if(instruction == 0x15){
+            registers[thirdOp] = pc;
+            pc = a+b;
+        }
+
+        else if(instruction == 0x17){
+            pc = a+b;
+        }
+        
+
     }
 
     public static byte[] intToBytes(int integer){
