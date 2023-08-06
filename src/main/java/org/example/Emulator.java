@@ -115,6 +115,30 @@ public class Emulator {
             }
         }
 
+        //JMP
+        else if(instruction == 0x13){
+            if(registers[thirdOp] == 1) {
+                pc = a + b - 1; //-1 considerando que pc será incrementado depois
+            }
+        }
+
+        //JMPR
+        else if(instruction == 0x14){
+            if(registers[thirdOp] == 1) {
+                pc += a + b - 1; //-1 considerando que pc será incrementado depois
+            }
+        }
+
+        //CALL
+        else if(instruction == 0x15){
+            registers[thirdOp] = pc;
+            pc = a+b;
+        }
+
+        else if(instruction == 0x17){
+            pc = a+b;
+        }
+        
 
     }
 
@@ -261,6 +285,30 @@ public class Emulator {
         System.out.println("A operação and resultou em: "+ (registers[10]));
         //==============================================================
 
+
+        /*                  JMP                 */
+        registers[1] = 1;
+
+        memory[0] = 0x13;
+        memory[1] = (byte) 0xFF;
+        memory[2] = 0x13;
+        memory[3] = (byte) 0xFF;
+        memory[4] = 0x00;
+        memory[5] = 1;
+        executeInstruction(memory[pc]);
+        pc++;
+
+        memory[0x13] = 0x01;
+        memory[0x13+1] = (byte) 0xFF;
+        memory[0x13+2] =  0x0A;
+        memory[0x13+3] = (byte) 0xFF;
+        memory[0x13+4] = 0x00;
+        memory[0x13+5] = 0x10;
+        executeInstruction(memory[pc]);
+
+        System.out.println(registers[0x10]);
+        pc = 0;
+        //==============================================================
 
 
     }
