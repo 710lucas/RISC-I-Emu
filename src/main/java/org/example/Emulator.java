@@ -1,5 +1,10 @@
 package org.example;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
 public class Emulator {
 
     private static int[] registers = new int[32];
@@ -38,6 +43,8 @@ public class Emulator {
 
             registers[thirdOp] = a+b;
 
+            System.out.printf("Somando "+a+" com "+ b+"\n");
+
             if(instruction == 0x02 && carry) {
                 registers[thirdOp]++;
                 correctvalue++;
@@ -54,6 +61,7 @@ public class Emulator {
         else if(instruction == 0x03 || instruction == 0x04){
 
             long correctValue = a-b;
+            System.out.printf("sub "+a+" com "+ b+"\n");
 
             registers[thirdOp] = a-b;
 
@@ -70,16 +78,19 @@ public class Emulator {
 
         // AND
         else if(instruction == 0x06){
+            System.out.printf("and "+a+" com "+ b+"\n");
             registers[thirdOp] = ((a)&(b));
         }
 
         //OR
         else if(instruction == 0x07){
+            System.out.printf("or "+a+" com "+ b+"\n");
             registers[thirdOp] = a|b;
         }
 
         //XOR
         else if(instruction == 0x08){
+            System.out.printf("xor "+a+" com "+ b+"\n");
             registers[thirdOp] = a^b;
         }
 
@@ -119,6 +130,7 @@ public class Emulator {
         else if(instruction == 0x13){
             if(registers[thirdOp] == 1) {
                 pc = a + b - 1; //-1 considerando que pc será incrementado depois
+                pc-=6; // Considerando ++ da proxima etapa
             }
         }
 
@@ -126,6 +138,7 @@ public class Emulator {
         else if(instruction == 0x14){
             if(registers[thirdOp] == 1) {
                 pc += a + b - 1; //-1 considerando que pc será incrementado depois
+                pc-=6;// Considerando ++ da proxima etapa
             }
         }
 
@@ -133,12 +146,16 @@ public class Emulator {
         else if(instruction == 0x15){
             registers[thirdOp] = pc;
             pc = a+b;
+            pc-=6; // Considerando ++ da proxima etapa
         }
 
+        //Ret
         else if(instruction == 0x17){
             pc = a+b;
+            pc-=6; // Considerando ++ da proxima etapa
         }
-        
+
+
 
     }
 
@@ -170,147 +187,40 @@ public class Emulator {
         return registers[lower];
     }
 
+    public static void loadMemory(String nomeArquivo){
+        try {
+            memory = Files.readAllBytes(Paths.get(nomeArquivo));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
 
-
         pc = 0;
+        String nomeArquivo;
+
+        Scanner sc = new Scanner(System.in);
+
+        if(args.length != 1) {
+            System.out.print("Informe o nome do arquivo: ");
+            nomeArquivo = sc.nextLine();
+        }
+        else
+            nomeArquivo = args[0];
+
+        loadMemory(nomeArquivo);
+
+        while(pc<memory.length-5){
+            executeInstruction(memory[pc]);
 
 
-        /*                  ADD                 */
-        memory[0] = 0x01;
-
-        //Primeiro operando
-        memory[1] = (byte) 0xFF;
-        memory[2] = 10;
-
-        //Segundo operando
-        memory[3] = (byte) 0xFF;
-        memory[4] = 5;
-
-        //Terceiro operando (em qual registrador será salvo a soma)
-        memory[5] = 0;
-        executeInstruction(memory[pc]);
-        System.out.println("A adição entre 10 e 5 é: "+registers[0]);
-        //==============================================================
 
 
-        /*                  SUB                 */
-        memory[0] = 0x03;
+            pc+=6; // cada instrução tem 6 bytes, pula de 6 em 6
+        }
 
-        //Primeiro operando
-        memory[1] = (byte) 0xFF;
-        memory[2] = 10;
-
-        //Segundo operando
-        memory[3] = (byte) 0xFF;
-        memory[4] = 5;
-
-        //Terceiro operando (em qual registrador será salvo a subtração)
-        memory[5] = 1;
-        executeInstruction(memory[pc]);
-        System.out.println("A subtração entre 10 e 5 é: "+registers[1]);
-        //==============================================================
-
-        /*                  AND                 */
-        memory[0] = 0x06;
-
-        //Primeiro operando
-        memory[1] = (byte) 0x20;
-        memory[2] = 0b00010100;
-
-        //Segundo operando
-        memory[3] = (byte) 0x20;
-        memory[4] = 0b00011100;
-
-        //Terceiro operando (em qual registrador será salvo a operação entre o primeiro&segundo)
-        memory[5] = 10;
-        executeInstruction(memory[pc]);
-        System.out.println("A operação and resultou em: "+ Integer.toBinaryString(registers[10]));
-        //==============================================================
-
-
-        /*                  OR                 */
-        memory[0] = 0x07;
-
-        //Primeiro operando
-        memory[1] = (byte) 0x20;
-        memory[2] = 0b00010100;
-
-        //Segundo operando
-        memory[3] = (byte) 0x20;
-        memory[4] = 0b00011100;
-
-        //Terceiro operando (em qual registrador será salvo a operação entre primeiro|segundo)
-        memory[5] = 10;
-        executeInstruction(memory[pc]);
-        System.out.println("A operação and resultou em: "+ Integer.toBinaryString(registers[10]));
-        //==============================================================
-
-        /*                  STL - STORE                 */
-        registers[1] = 69;
-        memory[0] = 0x10;
-
-        //Primeiro operando
-        memory[1] = (byte) 0xFF;
-        memory[2] = 14;
-
-        //Segundo operando
-        memory[3] = (byte) 0xFF;
-        memory[4] = 1;
-
-        //Primeiro operando e segundo operando serão somados para indicar o lugar da memória onde
-        //será armazenado o valor no registrador no terceiro operando
-
-        //Terceiro operando
-        memory[5] = 1;
-        executeInstruction(memory[pc]);
-
-
-        //==============================================================
-
-        /*                  LDL - LOAD                 */
-        memory[0] = 0x0c;
-
-        //Primeiro operando
-        memory[1] = (byte) 0x20;
-        memory[2] = 13;
-
-        //Segundo operando
-        memory[3] = (byte) 0x20;
-        memory[4] = 2;
-
-        //Terceiro operando (em qual registrador será salvo os dados em registradores[primeiro+segundo])
-        memory[5] = 10;
-        executeInstruction(memory[pc]);
-        System.out.println("A operação and resultou em: "+ (registers[10]));
-        //==============================================================
-
-
-        /*                  JMP                 */
-        registers[1] = 1;
-
-        memory[0] = 0x13;
-        memory[1] = (byte) 0xFF;
-        memory[2] = 0x13;
-        memory[3] = (byte) 0xFF;
-        memory[4] = 0x00;
-        memory[5] = 1;
-        executeInstruction(memory[pc]);
-        pc++;
-
-        memory[0x13] = 0x01;
-        memory[0x13+1] = (byte) 0xFF;
-        memory[0x13+2] =  0x0A;
-        memory[0x13+3] = (byte) 0xFF;
-        memory[0x13+4] = 0x00;
-        memory[0x13+5] = 0x10;
-        executeInstruction(memory[pc]);
-
-        System.out.println(registers[0x10]);
-        pc = 0;
-        //==============================================================
-
-
+        System.exit(0);
     }
 
 }
