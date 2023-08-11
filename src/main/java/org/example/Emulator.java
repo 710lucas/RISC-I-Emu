@@ -155,6 +155,13 @@ public class Emulator {
             pc-=6; // Considerando ++ da proxima etapa
         }
 
+        //Printa o valor armazenado no registrador informado em op3
+        //Apenas para fins de debug, pensar em outra maneira depois
+        //PRNT 0x0000 0x0000 0x0X
+        else if(instruction == 0x18){
+            System.out.println(registers[thirdOp]);
+        }
+
 
 
     }
@@ -213,9 +220,6 @@ public class Emulator {
 
         while(pc<memory.length-5){
             executeInstruction(memory[pc]);
-
-
-
 
             pc+=6; // cada instrução tem 6 bytes, pula de 6 em 6
         }
