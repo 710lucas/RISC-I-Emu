@@ -43,8 +43,6 @@ public class Emulator {
 
             registers[thirdOp] = a+b;
 
-            System.out.printf("Somando "+a+" com "+ b+"\n");
-
             if(instruction == 0x02 && carry) {
                 registers[thirdOp]++;
                 correctvalue++;
@@ -61,7 +59,8 @@ public class Emulator {
         else if(instruction == 0x03 || instruction == 0x04){
 
             long correctValue = a-b;
-            System.out.printf("sub "+a+" com "+ b+"\n");
+
+
 
             registers[thirdOp] = a-b;
 
@@ -78,19 +77,16 @@ public class Emulator {
 
         // AND
         else if(instruction == 0x06){
-            System.out.printf("and "+a+" com "+ b+"\n");
             registers[thirdOp] = ((a)&(b));
         }
 
         //OR
         else if(instruction == 0x07){
-            System.out.printf("or "+a+" com "+ b+"\n");
             registers[thirdOp] = a|b;
         }
 
         //XOR
         else if(instruction == 0x08){
-            System.out.printf("xor "+a+" com "+ b+"\n");
             registers[thirdOp] = a^b;
         }
 
@@ -128,16 +124,16 @@ public class Emulator {
 
         //JMP
         else if(instruction == 0x13){
-            if(registers[thirdOp] == 1) {
-                pc = a + b - 1; //-1 considerando que pc será incrementado depois
+            if(registers[thirdOp] != 0) {
+                pc = a + b;
                 pc-=6; // Considerando ++ da proxima etapa
             }
         }
 
         //JMPR
         else if(instruction == 0x14){
-            if(registers[thirdOp] == 1) {
-                pc += a + b - 1; //-1 considerando que pc será incrementado depois
+            if(registers[thirdOp] != 0) {
+                pc += a + b;
                 pc-=6;// Considerando ++ da proxima etapa
             }
         }
@@ -194,6 +190,13 @@ public class Emulator {
         return registers[lower];
     }
 
+    public static String getRegisters(){
+        String out = "";
+        for(int i = 0; i< registers.length; i++)
+            out+="Register "+i+": "+registers[i]+"\n";
+        return out;
+    }
+
     public static void loadMemory(String nomeArquivo){
         try {
             memory = Files.readAllBytes(Paths.get(nomeArquivo));
@@ -222,6 +225,8 @@ public class Emulator {
             executeInstruction(memory[pc]);
 
             pc+=6; // cada instrução tem 6 bytes, pula de 6 em 6
+
+//            System.out.println(getRegisters());
         }
 
         System.exit(0);
