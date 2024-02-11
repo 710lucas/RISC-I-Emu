@@ -1,3 +1,5 @@
+[English](README.md)
+
 # Emulador de RISC-I
 
 Este projeto foi feito com o intuito de apenas me aprofundar mais no conhecimento dos opcodes do RISC-I, ele não foi testado muito a fundo e pode apresentar inúmeros problemas, então não considerem este projeto como uma emulação fiel ao RISC-I proposto por David A. Patterson, uma vez que, além de não estar completo, ele ainda possui decisões tomadas por mim, que fazem com que ele seja fundamentalmente diferente do modelo RISC-I originalmente proposto.

@@ -1,8 +1,8 @@
+[Portuguese](README-pt.md)
+
 # RISC-I Emulator
 
 This project was created with the purpose of delving deeper into the knowledge of RISC-I opcodes. It has not been extensively tested and may present numerous issues, so do not consider this project as a faithful emulation of the RISC-I proposed by David A. Patterson. Not only is it incomplete, but it also contains decisions made by me that fundamentally differ from the original RISC-I model proposed.
-
-
 
 ## Simple Documentation
 
