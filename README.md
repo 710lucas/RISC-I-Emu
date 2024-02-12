@@ -1,4 +1,4 @@
-[Portuguese](README-pt.md)
+[Portuguese](README-pt.md)    [RISC-I Compiler](https://github.com/710lucas/RISC-I-Compiler)
 
 # RISC-I Emulator
 
