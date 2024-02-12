@@ -159,3 +159,10 @@ b: Value in Op2 (can be either a value in a register or a direct value)
   - Its used to return from a `CALL` so its interesting to know from which register(s) (or numbers) you're pulling the data from
   - `pc = a + b`
 
+---
+- PRNT (0x18), Print
+  - 
+  - This is used to debug pring the value stored on the register referenced by `op3`
+  - Use this while the emulator isn't finished
+  - `print(registers[op3]`
+
