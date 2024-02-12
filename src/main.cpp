@@ -22,9 +22,6 @@ int main(int argc, char* argv[]){
 
     else if(argc == 3 && strcmp(argv[1], "--file") == 0){
 
-        std::cout<<"starting emulator...\n";
-
-
         Emulator emulator = Emulator();
 
         char* filePath = argv[2];
