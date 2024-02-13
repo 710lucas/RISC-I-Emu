@@ -1,4 +1,6 @@
 #include "emulator.h"
+#include <iostream>
+#include <iomanip>
 
 #define ADD   0x01
 #define ADDC  0x02
@@ -135,8 +137,9 @@ void Emulator::executeInstruction(byte instruction){
         case LDL:
         case STL:
             memory_location = byteToInt(firstVal)+byteToInt(secondVal);
-            if(memory_location >= memory_size || memory_location < 0)
+            if(memory_location >= memory_size || memory_location < 0){
                 break;
+	    }
 
             if(instruction == LDL)
                 registers[thirdOp] = memory[memory_location];
@@ -182,7 +185,6 @@ void Emulator::executeInstruction(byte instruction){
 
 
 byte Emulator::getOperandValue(byte lower, byte higher){
-
     if(lower >= operandCap)
         return higher;
     return registers[lower];
@@ -196,5 +198,5 @@ void Emulator::setMemory(long position, byte value){
 
 
 int byteToInt(byte byteVar){
-    return static_cast<int>(static_cast<char>(byteVar));
+    return static_cast<unsigned int>(byteVar);
 }
