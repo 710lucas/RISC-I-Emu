@@ -1,4 +1,6 @@
-[Portuguese](README-pt.md)
+[Portuguese](README-pt.md)    
+
+[RISC-I Compiler](https://github.com/710lucas/RISC-I-Compiler)
 
 # RISC-I Emulator
 
@@ -121,15 +123,46 @@ b: Value in Op2 (can be either a value in a register or a direct value)
   - Note: Memory is byte-addressable, so the operation involves retrieving 4 bytes from the specified address and calculating the integer value to be stored.
   
 ---
-- STL (0x0B), Store:
+- STL (0x10), Store:
   - 
   - Stores values from register `op3` into memory location `a + b`.
   - `memory[a+b] = registers[op3]`
   - Note: Similar to loading, but involves storing the register value into 4 memory addresses.
   
 ---
-- JMP
-- JMPR
-- CALL
-- RET
+- JMP (0x13), Jump if 1
+  - 
+  - If the value in the register on `op3` is equal to `1`, then it sets pc to `a + b`
+  - `if(registers[op3] == 1) pc = a+b`
+
+---
+- JMPR (0x14), Jump relative if 1
+  -
+  - If the value in the register on `op3` is equal to `1`, then it increments pc by `a + b`
+  - `if(registers[op3] == 1) pc += a+b`
+
+---
+- CALL (0x15)
+  - 
+  - Sets the value on the register on `op3` to `pc`, then sets `pc` to `a + b`
+  - `registers[op3] = pc; pc = a + b`
+ 
+- CALLR (0x16), Call relative
+  -
+  - Sets the value on the register on `op3` to `pc`, then increments `pc` to `a + b`
+  - `registers[op3] = pc; pc += a + b`
+
+---
+- RET (0x17), Return
+  - 
+  - Sets `pc` to `a + b`
+  - Its used to return from a `CALL` so its interesting to know from which register(s) (or numbers) you're pulling the data from
+  - `pc = a + b`
+
+---
+- PRNT (0x18), Print
+  - 
+  - This is used to debug pring the value stored on the register referenced by `op3`
+  - Use this while the emulator isn't finished
+  - `print(registers[op3]`
 
