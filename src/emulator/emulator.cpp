@@ -1,6 +1,5 @@
 #include "emulator.h"
 #include <iostream>
-#include <iomanip>
 
 #define ADD   0x01
 #define ADDC  0x02
@@ -150,10 +149,11 @@ void Emulator::executeInstruction(byte instruction){
         case JMP:
         case JMPR:
             if(registers[thirdOp] == 1){
+                long jumpValue = byteToInt(firstVal)+byteToInt(secondVal);
                 if(instruction == JMP)
-                    pc = firstVal+secondVal;
+                    pc = jumpValue;
                 else
-                    pc += firstVal+secondVal;
+                    pc += jumpValue;
                 pc -= 6; //considering that +=6 will be added after each instruction
             }
             break;
