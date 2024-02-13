@@ -15,7 +15,7 @@ private:
 
     byte operandCap = 0x20;
 
-    int registers[32];
+    int registers[32] = {0};
     bool carry = false;
 
     long pc = 0;

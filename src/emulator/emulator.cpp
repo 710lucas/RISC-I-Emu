@@ -41,8 +41,9 @@ Emulator::Emulator(){
     this->memory = new byte[memory_size];
 }
 
-Emulator::Emulator(long memory_size) : Emulator(){
+Emulator::Emulator(long memory_size){
     this->memory_size = memory_size;
+    Emulator();
 }
 
 void Emulator::cycle(){
