@@ -1,4 +1,5 @@
 #include "emulator.h"
+#include <iostream>
 
 #define ADD   0x01
 #define ADDC  0x02
@@ -135,8 +136,9 @@ void Emulator::executeInstruction(byte instruction){
         case LDL:
         case STL:
             memory_location = byteToInt(firstVal)+byteToInt(secondVal);
-            if(memory_location >= memory_size || memory_location < 0)
+            if(memory_location >= memory_size || memory_location < 0){
                 break;
+	    }
 
             if(instruction == LDL)
                 registers[thirdOp] = memory[memory_location];
@@ -147,10 +149,11 @@ void Emulator::executeInstruction(byte instruction){
         case JMP:
         case JMPR:
             if(registers[thirdOp] == 1){
+                long jumpValue = byteToInt(firstVal)+byteToInt(secondVal);
                 if(instruction == JMP)
-                    pc = firstVal+secondVal;
+                    pc = jumpValue;
                 else
-                    pc += firstVal+secondVal;
+                    pc += jumpValue;
                 pc -= 6; //considering that +=6 will be added after each instruction
             }
             break;
@@ -167,7 +170,6 @@ void Emulator::executeInstruction(byte instruction){
 
         case RET:
             pc = firstVal+secondVal;
-            pc-=6;
             break;
 
         case PRNT:
@@ -182,7 +184,6 @@ void Emulator::executeInstruction(byte instruction){
 
 
 byte Emulator::getOperandValue(byte lower, byte higher){
-
     if(lower >= operandCap)
         return higher;
     return registers[lower];
@@ -194,7 +195,8 @@ void Emulator::setMemory(long position, byte value){
 }
 
 
-
+//Converts to an unsigned int
+//There will be no negative numbers
 int byteToInt(byte byteVar){
-    return static_cast<int>(static_cast<char>(byteVar));
+    return static_cast<unsigned int>(byteVar);
 }
