@@ -170,7 +170,6 @@ void Emulator::executeInstruction(byte instruction){
 
         case RET:
             pc = firstVal+secondVal;
-            pc-=6;
             break;
 
         case PRNT:
@@ -196,7 +195,8 @@ void Emulator::setMemory(long position, byte value){
 }
 
 
-
+//Converts to an unsigned int
+//There will be no negative numbers
 int byteToInt(byte byteVar){
     return static_cast<unsigned int>(byteVar);
 }
