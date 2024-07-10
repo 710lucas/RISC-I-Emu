@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "./emulator/emulator.h"
+#include "./emulator/cpu.h"
 #include <cstring>
 
 typedef unsigned char byte;
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 
     else if(argc == 3 && strcmp(argv[1], "--file") == 0){
 
-        Emulator emulator = Emulator();
+        Cpu emulator = Cpu();
 
         char* filePath = argv[2];
         std::ifstream file(filePath, std::ios::binary);

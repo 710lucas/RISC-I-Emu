@@ -3,12 +3,14 @@
 #include <stdio.h>
 #include <cstdint>
 #include <iostream>
+#include "./bus_module/busModule.hpp"
+#include "./stack/stack.h"
+#include "./BUS/systemBus.hpp"
 
 typedef short twoBytes;
 typedef unsigned char byte;
 
-class Emulator
-{
+class Cpu : public ModuleInterface{
 private:
 
     long memory_size = 4096;
@@ -25,10 +27,12 @@ private:
     const int maxValue = (1 << (sizeof(int) * 8 - 1)) - 1;
     const int minValue = -(1 << (sizeof(short) * 8 - 1));
 
+    Stack stack = Stack();
+
 
 public:
-    Emulator(/* args */);
-    Emulator(long memory_size);
+    Cpu(/* args */);
+    Cpu(long memory_size);
 
     byte getRegister(long position);
     void setRegister(long position, byte value);
@@ -51,5 +55,7 @@ public:
     byte getOperandValue(byte lower, byte higher);
     void executeInstruction(byte instruction);
     void cycle();
+
+    virtual byte execute(byte control, byte address, byte data);
 };
 

@@ -5,17 +5,17 @@
 // Each set of instructions is going to
 //   have a range, memory's range is from
 //   0x00 to 0x01
-#define MEMSTART 0x00 //Memory start
-#define MEMEND 0x01 //Memory end
+#define MEMSTART 0xF0 //Memory start
+#define MEMEND 0xF1 //Memory end
 
 // Info about the CPU's instructions
-#define CPUSTART 0x02 //CPU start
-#define CPUEND 0x03 //CPU end
+#define CPUSTART 0xF2 //CPU start
+#define CPUEND 0xF3 //CPU end
 
-#define MEMWRITE 0x00 //Memory write to the bus
-#define MEMREAD 0x01 //Memory read from the bus
-#define CPUREAD 0x02 //Interruption to make CPU read the BUS
-#define CPUWRITE 0x03  //Interruption to make CPU write to the BUS
+#define MEMWRITE 0xF0 //Memory write to the bus
+#define MEMREAD 0xF1 //Memory read from the bus
+#define CPUREAD 0xF2 //Interruption to make CPU read the BUS
+#define CPUWRITE 0xF3  //Interruption to make CPU write to the BUS
 
 SystemBus::SystemBus(){
     this->dataBus = Bus();

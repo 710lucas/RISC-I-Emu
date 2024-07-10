@@ -1,4 +1,4 @@
-#include "emulator.h"
+#include "cpu.h"
 #include <iostream>
 
 #define ADD   0x01
@@ -38,16 +38,17 @@ typedef unsigned char byte;
 
 int byteToInt(byte byteVar);
 
-Emulator::Emulator(){
+Cpu::Cpu(){
     this->memory = new byte[memory_size];
+    this->stack = Stack();
 }
 
-Emulator::Emulator(long memory_size){
+Cpu::Cpu(long memory_size){
     this->memory_size = memory_size;
-    Emulator();
+    Cpu();
 }
 
-void Emulator::cycle(){
+void Cpu::cycle(){
 
     while(pc < memory_size-5){
 
@@ -59,7 +60,7 @@ void Emulator::cycle(){
 
 }
 
-void Emulator::executeInstruction(byte instruction){
+void Cpu::executeInstruction(byte instruction){
 
     byte firstOpLower, firstOpHigher;
     twoBytes firstOp;
@@ -183,14 +184,14 @@ void Emulator::executeInstruction(byte instruction){
 }
 
 
-byte Emulator::getOperandValue(byte lower, byte higher){
+byte Cpu::getOperandValue(byte lower, byte higher){
     if(lower >= operandCap)
         return higher;
     return registers[lower];
 
 }
 
-void Emulator::setMemory(long position, byte value){
+void Cpu::setMemory(long position, byte value){
     memory[position] = value;
 }
 
@@ -199,4 +200,24 @@ void Emulator::setMemory(long position, byte value){
 //There will be no negative numbers
 int byteToInt(byte byteVar){
     return static_cast<unsigned int>(byteVar);
+}
+
+
+byte Cpu::execute(byte control, byte address, byte data){
+    stack.push(pc);
+
+    switch(control){
+        case CPUREAD:
+            // read from the BUS
+            break;
+        case CPUWRITE:
+            // write to the BUS
+            break;
+        default:
+            std::cout << "Invalid control signal : " << control << std::endl;
+            break;
+    }
+
+    pc = stack.pop();
+
 }
