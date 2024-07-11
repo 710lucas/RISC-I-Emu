@@ -23,6 +23,8 @@
 
 #define RET   0x17
 
+#define RBUS  0x20 //Read bus
+
 /*
 * Print
 * This is just used for debug
@@ -46,6 +48,11 @@ Cpu::Cpu(){
 Cpu::Cpu(long memory_size){
     this->memory_size = memory_size;
     Cpu();
+}
+
+Cpu::Cpu(long memory_size, SystemBus bus){
+    this->bus = bus;
+    Cpu(memory_size);
 }
 
 void Cpu::cycle(){
@@ -176,6 +183,10 @@ void Cpu::executeInstruction(byte instruction){
         case PRNT:
             std::cout<<registers[thirdOp]<<"\n";
             break;
+
+        case RBUS:
+            registers[thirdOp] = byteToInt(bus.readData());
+            break;
         
         default:
             break;
@@ -200,24 +211,4 @@ void Cpu::setMemory(long position, byte value){
 //There will be no negative numbers
 int byteToInt(byte byteVar){
     return static_cast<unsigned int>(byteVar);
-}
-
-
-byte Cpu::execute(byte control, byte address, byte data){
-    stack.push(pc);
-
-    switch(control){
-        case CPUREAD:
-            // read from the BUS
-            break;
-        case CPUWRITE:
-            // write to the BUS
-            break;
-        default:
-            std::cout << "Invalid control signal : " << control << std::endl;
-            break;
-    }
-
-    pc = stack.pop();
-
 }

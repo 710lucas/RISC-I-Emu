@@ -10,7 +10,7 @@
 typedef short twoBytes;
 typedef unsigned char byte;
 
-class Cpu : public ModuleInterface{
+class Cpu{
 private:
 
     long memory_size = 4096;
@@ -29,10 +29,13 @@ private:
 
     Stack stack = Stack();
 
+    SystemBus bus;
+
 
 public:
     Cpu(/* args */);
     Cpu(long memory_size);
+    Cpu(long memory_size, SystemBus bus);
 
     byte getRegister(long position);
     void setRegister(long position, byte value);
@@ -55,7 +58,5 @@ public:
     byte getOperandValue(byte lower, byte higher);
     void executeInstruction(byte instruction);
     void cycle();
-
-    virtual byte execute(byte control, byte address, byte data);
 };
 
