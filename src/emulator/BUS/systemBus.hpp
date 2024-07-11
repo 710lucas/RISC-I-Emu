@@ -18,10 +18,10 @@ typedef unsigned char byte;
 #define CPUSTART 0xF2 //CPU start
 #define CPUEND 0xF3 //CPU end
 
-#define MEMWRITE 0xF0 //Memory write to the bus
-#define MEMREAD 0xF1 //Memory read from the bus
-#define CPUREAD 0xF2 //Interruption to make CPU read the BUS
-#define CPUWRITE 0xF3  //Interruption to make CPU write to the BUS
+#define MEMWRITE 0xF0 //Bus requesting to write to memory
+#define MEMREAD 0xF1 //Bus requesting to read from memory
+#define CPUREAD 0xF2 //Bus interrupting CPU to read from the BUS
+#define CPUWRITE 0xF3  //Bus interrupting CPU to write to the BUS
 
 class SystemBus{
 
