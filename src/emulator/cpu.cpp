@@ -23,8 +23,8 @@
 
 #define RET   0x17
 
-#define RBUS  0x20 //Read from bus
-#define WBUS  0x21 //Write to bus
+#define RBUS  0x20 //Read from bus; data: firstVal; address: secondVal; control: thirdOp
+#define WBUS  0x21 //Write to bus; data: firstVal; address: secondVal; control: thirdOp
 
 /*
 * Print
@@ -36,6 +36,8 @@
 * 
 */
 #define PRNT  0x18
+
+#define STP   0x30
 
 typedef unsigned char byte;
 
@@ -60,7 +62,22 @@ void Cpu::cycle(){
 
     while(pc < memory_size-5){
 
-        executeInstruction(memory[pc]);
+        this->bus.writeControl(MEMREAD);
+        this->bus.writeAddress(pc);
+        this->bus.execute();
+        
+        byte instruction = this->bus.readData();
+
+        if(instruction == NULL){
+            std::cerr<<"Invalid instruction\n";
+            break;
+        }
+
+        int result = executeInstruction(instruction);
+
+        if(result == 1){
+            break;
+        }
 
         pc+=6;
 
@@ -68,7 +85,7 @@ void Cpu::cycle(){
 
 }
 
-void Cpu::executeInstruction(byte instruction){
+int Cpu::executeInstruction(byte instruction){
 
     byte firstOpLower, firstOpHigher;
     twoBytes firstOp;
@@ -76,15 +93,31 @@ void Cpu::executeInstruction(byte instruction){
     twoBytes secondOp;
     byte thirdOp;
 
-    firstOpLower = memory[pc+1] & 0xFF;
-    firstOpHigher = memory[pc+2] & 0xFF;
+    this->bus.writeControl(MEMREAD);
+    this->bus.writeAddress(pc+1);
+    this->bus.execute();
+    firstOpLower = this->bus.readData() & 0xFF;
+
+    this->bus.writeAddress(pc+2);
+    this->bus.execute();
+    firstOpHigher = this->bus.readData() & 0xFF;
+
     firstOp = ((firstOpLower) << 8) | firstOpHigher;
 
-    secondOpLower = memory[pc+3] & 0xFF;
-    secondOpHigher = memory[pc+4] & 0xFF;
+    this->bus.writeAddress(pc+3);
+    this->bus.execute();
+    secondOpLower = this->bus.readData() & 0xFF;
+
+    this->bus.writeAddress(pc+4);
+    this->bus.execute();
+    secondOpHigher = this->bus.readData() & 0xFF;
+
     secondOp = ((secondOpLower) << 8) | secondOpHigher;
 
-    thirdOp = memory[pc+5] & 0xFF;
+    this->bus.writeControl(MEMREAD);
+    this->bus.writeAddress(pc+5);
+    this->bus.execute();
+    thirdOp = this->bus.readData() & 0xFF;
 
     byte firstVal = getOperandValue(firstOpLower, firstOpHigher);
     byte secondVal = getOperandValue(secondOpLower, secondOpHigher);
@@ -147,12 +180,28 @@ void Cpu::executeInstruction(byte instruction){
             memory_location = byteToInt(firstVal)+byteToInt(secondVal);
             if(memory_location >= memory_size || memory_location < 0){
                 break;
-	    }
+            }
 
-            if(instruction == LDL)
-                registers[thirdOp] = memory[memory_location];
-            else if(instruction == STL)
-                memory[memory_location] = registers[thirdOp];
+            if(instruction == LDL){
+                this->bus.writeControl(MEMREAD);
+                this->bus.writeAddress(memory_location);
+                this->bus.execute();
+
+                byte loadedValue = this->bus.readData();
+
+                if(loadedValue == NULL){
+                    std::cerr<<"Invalid memory location\n";
+                    break;
+                }
+
+                registers[thirdOp] = loadedValue;
+            }
+            else if(instruction == STL){
+                this->bus.writeControl(MEMWRITE);
+                this->bus.writeAddress(memory_location);
+                this->bus.writeData(registers[thirdOp]);
+                this->bus.execute();
+            }
             break;
 
         case JMP:
@@ -186,16 +235,25 @@ void Cpu::executeInstruction(byte instruction){
             break;
 
         case RBUS:
-            registers[thirdOp] = byteToInt(bus.readData());
+            registers[firstVal] = byteToInt(bus.readData());
+            registers[secondVal] = byteToInt(bus.readAddress());
+            registers[thirdOp] = byteToInt(bus.readControl());
             break;
 
         case WBUS:
-            bus.writeData(registers[thirdOp]);
+            bus.writeData(firstVal);
+            bus.writeAddress(secondVal);
+            bus.writeControl(registers[thirdOp]);
             break;
+
+        case STP:
+            return 1;
         
         default:
             break;
     }
+
+    return 0;
 
 }
 
