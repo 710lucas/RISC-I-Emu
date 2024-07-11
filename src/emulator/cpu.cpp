@@ -23,7 +23,8 @@
 
 #define RET   0x17
 
-#define RBUS  0x20 //Read bus
+#define RBUS  0x20 //Read from bus
+#define WBUS  0x21 //Write to bus
 
 /*
 * Print
@@ -186,6 +187,10 @@ void Cpu::executeInstruction(byte instruction){
 
         case RBUS:
             registers[thirdOp] = byteToInt(bus.readData());
+            break;
+
+        case WBUS:
+            bus.writeData(registers[thirdOp]);
             break;
         
         default:
