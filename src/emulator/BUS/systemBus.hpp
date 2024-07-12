@@ -12,16 +12,17 @@ typedef unsigned char byte;
 //   have a range, memory's range is from
 //   0x00 to 0x01
 #define MEMSTART 0xF0 //Memory start
-#define MEMEND 0xF1 //Memory end
+#define MEMEND 0xF2 //Memory end
 
 // Info about the CPU's instructions
-#define CPUSTART 0xF2 //CPU start
-#define CPUEND 0xF3 //CPU end
+#define CPUSTART 0xF3 //CPU start
+#define CPUEND 0xF4 //CPU end
 
-#define MEMWRITE 0xF0 //Bus requesting to write to memory
-#define MEMREAD 0xF1 //Bus requesting to read from memory
-#define CPUREAD 0xF2 //Bus interrupting CPU to read from the BUS
-#define CPUWRITE 0xF3  //Bus interrupting CPU to write to the BUS
+#define MEMWRITE 0xF0 //Bus requesting to write to memory; Bus write to memory
+#define MEMREAD 0xF1 //Bus requesting to read from memory; Bus read from memory
+#define END_MEMREAD 0xF2
+#define CPUREAD 0xF3 //Bus interrupting CPU to read from the BUS; Cpu read from the BUS
+#define CPUWRITE 0xF4  //Bus interrupting CPU to write to the BUS; Bus write to CPU
 
 class SystemBus{
 
