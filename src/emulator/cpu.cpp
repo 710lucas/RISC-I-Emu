@@ -43,33 +43,28 @@ typedef unsigned char byte;
 
 int byteToInt(byte byteVar);
 
-Cpu::Cpu(){
-    this->memory = new byte[memory_size];
+Cpu::Cpu() : bus(*(new SystemBus())){
     this->stack = Stack();
 }
 
-Cpu::Cpu(long memory_size){
-    this->memory_size = memory_size;
+Cpu::Cpu(SystemBus &bus) : bus (bus){
     Cpu();
-}
-
-Cpu::Cpu(long memory_size, SystemBus bus){
-    this->bus = bus;
-    Cpu(memory_size);
 }
 
 void Cpu::cycle(){
 
-    while(pc < memory_size-5){
+    while(true){
+
 
         this->bus.writeControl(MEMREAD);
         this->bus.writeAddress(pc);
         this->bus.execute();
-        
+
         byte instruction = this->bus.readData();
 
+
         if(instruction == NULL){
-            std::cerr<<"Invalid instruction\n";
+            std::cerr<<"Invalid instruction" << static_cast<int>(instruction) << "\n";
             break;
         }
 
@@ -99,16 +94,19 @@ int Cpu::executeInstruction(byte instruction){
     firstOpLower = this->bus.readData() & 0xFF;
 
     this->bus.writeAddress(pc+2);
+    this->bus.writeControl(MEMREAD);
     this->bus.execute();
     firstOpHigher = this->bus.readData() & 0xFF;
 
     firstOp = ((firstOpLower) << 8) | firstOpHigher;
 
     this->bus.writeAddress(pc+3);
+    this->bus.writeControl(MEMREAD);
     this->bus.execute();
     secondOpLower = this->bus.readData() & 0xFF;
 
     this->bus.writeAddress(pc+4);
+    this->bus.writeControl(MEMREAD);
     this->bus.execute();
     secondOpHigher = this->bus.readData() & 0xFF;
 
@@ -178,10 +176,6 @@ int Cpu::executeInstruction(byte instruction){
         case LDL:
         case STL:
             memory_location = byteToInt(firstVal)+byteToInt(secondVal);
-            if(memory_location >= memory_size || memory_location < 0){
-                break;
-            }
-
             if(instruction == LDL){
                 this->bus.writeControl(MEMREAD);
                 this->bus.writeAddress(memory_location);
@@ -264,11 +258,6 @@ byte Cpu::getOperandValue(byte lower, byte higher){
     return registers[lower];
 
 }
-
-void Cpu::setMemory(long position, byte value){
-    memory[position] = value;
-}
-
 
 //Converts to an unsigned int
 //There will be no negative numbers

@@ -7,19 +7,19 @@
 class Memory : public ModuleInterface{
 
     private:
-        SystemBus bus;
+        SystemBus& bus;
         std::vector<byte> memory;
 
     public:
         Memory();
-        Memory(SystemBus bus);
-        Memory(long memory_size, SystemBus bus);
+        Memory(SystemBus &bus);
+        Memory(long memory_size, SystemBus &bus);
 
 
         byte read(long position);
         void write(long position, byte data);
 
-        virtual byte execute(byte control, byte address, byte data);
+        virtual byte execute(byte control, byte address, byte data) override;
         
 
 };

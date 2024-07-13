@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include "./emulator/cpu.h"
+#include "./emulator/memory/memory.hpp"
+#include "./emulator/BUS/systemBus.hpp"
 #include <cstring>
 
 typedef unsigned char byte;
@@ -22,7 +24,12 @@ int main(int argc, char* argv[]){
 
     else if(argc == 3 && strcmp(argv[1], "--file") == 0){
 
-        Cpu emulator = Cpu();
+        SystemBus* bus = new SystemBus();
+
+        Memory* mem =  new Memory(2048, *bus);
+        bus->setMemoryModule(mem);
+
+        Cpu* cpu = new Cpu(*bus);
 
         char* filePath = argv[2];
         std::ifstream file(filePath, std::ios::binary);
@@ -47,10 +54,12 @@ int main(int argc, char* argv[]){
         }
 
         for(int i = 0; i<fileSize; i++){
-            emulator.setMemory(i, static_cast<byte>(buffer[i]));
+            mem->write(i, static_cast<byte>(buffer[i]));
         }
 
-        emulator.cycle();
+        file.close();
+
+        cpu->cycle();
     }
 
 

@@ -1,17 +1,16 @@
 #include "memory.hpp"
+#include <iostream>
 
-Memory::Memory(){
+Memory::Memory() : bus(*(new SystemBus())){
     this->memory = std::vector<byte>(256);
 }
 
-Memory::Memory(SystemBus bus){
-    this->bus = bus;
+Memory::Memory(SystemBus &bus) : bus(bus){
     Memory();
 }
 
-Memory::Memory(long memory_size, SystemBus bus){
+Memory::Memory(long memory_size, SystemBus &bus) : bus(bus){
     this->memory = std::vector<byte>(memory_size);
-    this->bus = bus;
 }
 
 byte Memory::read(long position){
@@ -20,7 +19,10 @@ byte Memory::read(long position){
 }
 
 void Memory::write(long position, byte data){
-    this->memory[position] = data;
+        if (position >= 0 && position < this->memory.size()) {
+        this->memory[position] = data;
+    } else {
+    }
 }
 
 byte Memory::execute(byte control, byte address, byte data){

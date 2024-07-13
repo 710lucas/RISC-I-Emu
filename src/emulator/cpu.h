@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <cstdint>
 #include <iostream>
-#include "./bus_module/busModule.hpp"
+#include "./BUS/bus_module/busModule.hpp"
 #include "./stack/stack.h"
 #include "./BUS/systemBus.hpp"
 
@@ -13,8 +13,6 @@ typedef unsigned char byte;
 class Cpu{
 private:
 
-    long memory_size = 4096;
-
     byte operandCap = 0x20;
 
     int registers[32] = {0};
@@ -22,20 +20,17 @@ private:
 
     long pc = 0;
 
-    byte* memory;
-
     const int maxValue = (1 << (sizeof(int) * 8 - 1)) - 1;
     const int minValue = -(1 << (sizeof(short) * 8 - 1));
 
     Stack stack = Stack();
 
-    SystemBus bus;
+    SystemBus& bus;
 
 
 public:
     Cpu(/* args */);
-    Cpu(long memory_size);
-    Cpu(long memory_size, SystemBus bus);
+    Cpu(SystemBus &bus);
 
     byte getRegister(long position);
     void setRegister(long position, byte value);

@@ -54,10 +54,18 @@ void SystemBus::execute(){
     byte control = this->readControl();
 
     if(control >= MEMSTART && control <= MEMEND){
-        this->memoryModule->execute(control, address, data);
-    }
-    else if(control >= CPUSTART && control <= CPUEND){
-        this->cpuModule->execute(control, address, data);
+        // std::cout<<"Memory control signal: "<<control<<std::endl;
+        // if(memoryModule == NULL)
+        //     std::cerr<<"Memory module not set\n";   
+
+        // std::cout<<"Memory module"<<memoryModule<<std::endl;
+        // this->memoryModule->execute(control, address, data);
+        if(memoryModule == NULL) {
+            std::cerr << "Memory module not set\n";
+            return; // Adiciona esta linha para retornar imediatamente
+        }
+
+        memoryModule->execute(control, address, data);
     }
     else{
         std::cout << "Invalid control signal : " << control << std::endl;
