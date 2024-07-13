@@ -82,6 +82,7 @@ void Cpu::cycle(){
 
 int Cpu::executeInstruction(byte instruction){
 
+
     byte firstOpLower, firstOpHigher;
     twoBytes firstOp;
     byte secondOpLower, secondOpHigher;
@@ -222,6 +223,7 @@ int Cpu::executeInstruction(byte instruction){
 
         case RET:
             pc = firstVal+secondVal;
+            pc -= 6;
             break;
 
         case PRNT:
