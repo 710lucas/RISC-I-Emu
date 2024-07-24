@@ -14,10 +14,12 @@ SUB 0x0000 0xFF06 0x01
 
 //byte 18
 //Checking if register 0 is the same
+//Should print 5
 PRNT 0x0000 0x0000 0x00
 
 //byte 24
 //Checking if regiser 1 is correct
+//Should print -1
 PRNT 0x0000 0x0000 0x01
 
 //byte 30
@@ -96,6 +98,7 @@ LDL 0xFFC8 0xFFC8 0x07
 
 //byte 120
 //Checking if STL was succesful
+//Should print 42
 PRNT 0x0000 0x0000 0x07
 
 //byte 126
@@ -152,7 +155,12 @@ ADD 0xFF0A 0xFF00 0x10
 //Testing CALL
 //Will Call the line that returns, the return print the line again, causing a loop
 //Will store the current position in register 10
+//Call byte 216
 CALL 0xFFD8 0xFF00 0x0A
+
+//Instructions between call and ret won't do anything 
+//since they're calling and returning each other
+//This is a loop that will run until you stop the emulator
 
 //byte 198
 //Printing 0x0A
@@ -173,3 +181,6 @@ RET 0x0A00 0xFF00 0x00
 //Printing the value in register 10
 PRNT 0x0000 0x0000 0x10
 
+//byte 228
+//Stoping
+STP 0x0000 0x0000 0x0000

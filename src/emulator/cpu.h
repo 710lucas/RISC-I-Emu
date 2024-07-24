@@ -3,15 +3,15 @@
 #include <stdio.h>
 #include <cstdint>
 #include <iostream>
+#include "./BUS/bus_module/busModule.hpp"
+#include "./stack/stack.h"
+#include "./BUS/systemBus.hpp"
 
 typedef short twoBytes;
 typedef unsigned char byte;
 
-class Emulator
-{
+class Cpu{
 private:
-
-    long memory_size = 4096;
 
     byte operandCap = 0x20;
 
@@ -20,15 +20,17 @@ private:
 
     long pc = 0;
 
-    byte* memory;
-
     const int maxValue = (1 << (sizeof(int) * 8 - 1)) - 1;
     const int minValue = -(1 << (sizeof(short) * 8 - 1));
 
+    Stack stack = Stack();
+
+    SystemBus& bus;
+
 
 public:
-    Emulator(/* args */);
-    Emulator(long memory_size);
+    Cpu(/* args */);
+    Cpu(SystemBus &bus);
 
     byte getRegister(long position);
     void setRegister(long position, byte value);
@@ -49,7 +51,7 @@ public:
 
     void loadIntoMemory(byte toLoad[]);
     byte getOperandValue(byte lower, byte higher);
-    void executeInstruction(byte instruction);
+    int executeInstruction(byte instruction);
     void cycle();
 };
 

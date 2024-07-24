@@ -1,4 +1,4 @@
-#include "emulator.h"
+#include "cpu.h"
 #include <iostream>
 
 #define ADD   0x01
@@ -23,6 +23,9 @@
 
 #define RET   0x17
 
+#define RBUS  0x20 //Read from bus; data: firstVal; address: secondVal; control: thirdOp
+#define WBUS  0x21 //Write to bus; data: firstVal; address: secondVal; control: thirdOp
+
 /*
 * Print
 * This is just used for debug
@@ -34,24 +37,42 @@
 */
 #define PRNT  0x18
 
+#define STP   0x30
+
 typedef unsigned char byte;
 
 int byteToInt(byte byteVar);
 
-Emulator::Emulator(){
-    this->memory = new byte[memory_size];
+Cpu::Cpu() : bus(*(new SystemBus())){
+    this->stack = Stack();
 }
 
-Emulator::Emulator(long memory_size){
-    this->memory_size = memory_size;
-    Emulator();
+Cpu::Cpu(SystemBus &bus) : bus (bus){
+    Cpu();
 }
 
-void Emulator::cycle(){
+void Cpu::cycle(){
 
-    while(pc < memory_size-5){
+    while(true){
 
-        executeInstruction(memory[pc]);
+
+        this->bus.writeControl(MEMREAD);
+        this->bus.writeAddress(pc);
+        this->bus.execute();
+
+        byte instruction = this->bus.readData();
+
+
+        if(instruction == NULL){
+            std::cerr<<"Invalid instruction" << static_cast<int>(instruction) << "\n";
+            break;
+        }
+
+        int result = executeInstruction(instruction);
+
+        if(result == 1){
+            break;
+        }
 
         pc+=6;
 
@@ -59,7 +80,8 @@ void Emulator::cycle(){
 
 }
 
-void Emulator::executeInstruction(byte instruction){
+int Cpu::executeInstruction(byte instruction){
+
 
     byte firstOpLower, firstOpHigher;
     twoBytes firstOp;
@@ -67,15 +89,34 @@ void Emulator::executeInstruction(byte instruction){
     twoBytes secondOp;
     byte thirdOp;
 
-    firstOpLower = memory[pc+1] & 0xFF;
-    firstOpHigher = memory[pc+2] & 0xFF;
+    this->bus.writeControl(MEMREAD);
+    this->bus.writeAddress(pc+1);
+    this->bus.execute();
+    firstOpLower = this->bus.readData() & 0xFF;
+
+    this->bus.writeAddress(pc+2);
+    this->bus.writeControl(MEMREAD);
+    this->bus.execute();
+    firstOpHigher = this->bus.readData() & 0xFF;
+
     firstOp = ((firstOpLower) << 8) | firstOpHigher;
 
-    secondOpLower = memory[pc+3] & 0xFF;
-    secondOpHigher = memory[pc+4] & 0xFF;
+    this->bus.writeAddress(pc+3);
+    this->bus.writeControl(MEMREAD);
+    this->bus.execute();
+    secondOpLower = this->bus.readData() & 0xFF;
+
+    this->bus.writeAddress(pc+4);
+    this->bus.writeControl(MEMREAD);
+    this->bus.execute();
+    secondOpHigher = this->bus.readData() & 0xFF;
+
     secondOp = ((secondOpLower) << 8) | secondOpHigher;
 
-    thirdOp = memory[pc+5] & 0xFF;
+    this->bus.writeControl(MEMREAD);
+    this->bus.writeAddress(pc+5);
+    this->bus.execute();
+    thirdOp = this->bus.readData() & 0xFF;
 
     byte firstVal = getOperandValue(firstOpLower, firstOpHigher);
     byte secondVal = getOperandValue(secondOpLower, secondOpHigher);
@@ -136,14 +177,26 @@ void Emulator::executeInstruction(byte instruction){
         case LDL:
         case STL:
             memory_location = byteToInt(firstVal)+byteToInt(secondVal);
-            if(memory_location >= memory_size || memory_location < 0){
-                break;
-	    }
+            if(instruction == LDL){
+                this->bus.writeControl(MEMREAD);
+                this->bus.writeAddress(memory_location);
+                this->bus.execute();
 
-            if(instruction == LDL)
-                registers[thirdOp] = memory[memory_location];
-            else if(instruction == STL)
-                memory[memory_location] = registers[thirdOp];
+                byte loadedValue = this->bus.readData();
+
+                if(loadedValue == NULL){
+                    std::cerr<<"Invalid memory location\n";
+                    break;
+                }
+
+                registers[thirdOp] = loadedValue;
+            }
+            else if(instruction == STL){
+                this->bus.writeControl(MEMWRITE);
+                this->bus.writeAddress(memory_location);
+                this->bus.writeData(registers[thirdOp]);
+                this->bus.execute();
+            }
             break;
 
         case JMP:
@@ -170,30 +223,43 @@ void Emulator::executeInstruction(byte instruction){
 
         case RET:
             pc = firstVal+secondVal;
+            pc -= 6;
             break;
 
         case PRNT:
             std::cout<<registers[thirdOp]<<"\n";
             break;
+
+        case RBUS:
+            registers[firstVal] = byteToInt(bus.readData());
+            registers[secondVal] = byteToInt(bus.readAddress());
+            registers[thirdOp] = byteToInt(bus.readControl());
+            break;
+
+        case WBUS:
+            bus.writeData(firstVal);
+            bus.writeAddress(secondVal);
+            bus.writeControl(registers[thirdOp]);
+            break;
+
+        case STP:
+            return 1;
         
         default:
             break;
     }
 
+    return 0;
+
 }
 
 
-byte Emulator::getOperandValue(byte lower, byte higher){
+byte Cpu::getOperandValue(byte lower, byte higher){
     if(lower >= operandCap)
         return higher;
     return registers[lower];
 
 }
-
-void Emulator::setMemory(long position, byte value){
-    memory[position] = value;
-}
-
 
 //Converts to an unsigned int
 //There will be no negative numbers
