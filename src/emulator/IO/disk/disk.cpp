@@ -1,6 +1,7 @@
 #include "./disk.hpp"
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 /*
     Disclaimer
@@ -16,12 +17,52 @@ Disk::Disk(SystemBus &bus) : IOInterface(bus){
 
 void Disk::write(byte data){
 
+    const long lineNumber = this->getBus()->readAddress();
+
+
+    /*
+        To be able to add a byte to any line we need to
+        read the file so we can edit the line that we want
+        and then rewrite the file with the new data
+
+        We can't edit a specific line with std::ofstream
+    */
+
+    //Preparing to read file
+    std::ifstream readingFile("disk.txt");
+    std::vector<std::string> lines;
+    std::string line;
+
+    //Reading file
+    if(readingFile.is_open()){
+        while(std::getline(readingFile, line)){
+            lines.push_back(line);
+        }
+        readingFile.close();
+    }
+
+    //Adding empty lines if the file is too short
+    while(lines.size() <= lineNumber){
+        lines.push_back("");
+    }
+
+    //Editing the line
+    lines[lineNumber] = std::to_string(static_cast<int>(data));
+
+
     std::ofstream file("disk.txt");
 
-    if(file.is_open()){
-        file << static_cast<int>(data) << '\n';
-        file.close();
-    } else {
+    //Rewriting to file
+    std::ofstream writingFile("disk.txt");
+
+    if(writingFile.is_open()){
+        for(const auto& line: lines){
+            writingFile << line << "\n";
+        }
+        writingFile.close();
+    } 
+
+    else {
         std::cout << "Unable to open file\n";
     }
 
