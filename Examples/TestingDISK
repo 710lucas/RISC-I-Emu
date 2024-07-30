@@ -1,0 +1,20 @@
+//Adding 0xF6 to register 0
+//0xF6 is the instruction to Write to disk
+ADD 0xFFF6 0XFF00 0x0000
+
+//Debug: printing value in register 9
+PRNT 0x0000 0x0000 0x0000
+
+//Writing the instruction 0xF6 (stored in register 0) to the bus
+//Writing the data that will be written: 0x0A
+//writing the address (line) in which the data will be written: 0x01 (line 2)
+//Remember, the first line is 0
+WBUS 0xff0A 0xff01 0x0000
+
+//Writing the instruction 0xF6 (stored in register 0) to the bus
+//Writing the data that will be written: 0x01
+//writing the address (line) in which the data will be written: 0x09 (line 10)
+WBUS 0xFF01 0xFF09 0x0000
+
+//Stopping the program
+STP 0x0000 0x0000 0x0000

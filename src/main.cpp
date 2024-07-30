@@ -4,6 +4,7 @@
 #include "./emulator/cpu.h"
 #include "./emulator/memory/memory.hpp"
 #include "./emulator/BUS/systemBus.hpp"
+#include "./emulator/IO/disk/disk.hpp"
 #include <cstring>
 
 typedef unsigned char byte;
@@ -28,6 +29,9 @@ int main(int argc, char* argv[]){
 
         Memory* mem =  new Memory(2048, *bus);
         bus->setMemoryModule(mem);
+
+        Disk* disk = new Disk(*bus); 
+        bus->setDiskModule(disk);
 
         Cpu* cpu = new Cpu(*bus);
 

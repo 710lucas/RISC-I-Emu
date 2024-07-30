@@ -74,6 +74,10 @@ void Cpu::cycle(){
             break;
         }
 
+        this->bus.execute();
+
+        // Run IO cycle
+
         pc+=6;
 
     }
