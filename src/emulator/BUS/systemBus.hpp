@@ -26,15 +26,16 @@ typedef unsigned char byte;
 
 
 // Info about the IO's DISK instructions
-#define DISKSTART DISKREAD;
-#define DISKEND DISKWRITE;
 
 #define DISKREAD 0xF5 //Bus requesting to read from DISK; Bus read from DISK
 #define DISKWRITE 0xF6 //Bus requesting to write to DISK; Bus write to DISK
 
+#define DISKSTART DISKREAD
+#define DISKEND DISKWRITE
+
 // Info about the IO's SCREEN instructions
-#define SCREENSTART SCREENWRITE;
-#define SCREENEND SCREENWRITE;
+#define SCREENSTART SCREENWRITE
+#define SCREENEND SCREENWRITE
 
 #define SCREENWRITE 0xF7 //Bus requesting to write to SCREEN; Bus write to SCREEN
 

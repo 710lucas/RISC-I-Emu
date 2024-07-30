@@ -10,15 +10,21 @@
 
 class IOInterface : public ModuleInterface{
 
-    // private: 
-    //     SystemBus& bus;
+    private: 
+        SystemBus& bus;
 
     public:
+
+        IOInterface(SystemBus &bus);
+
+        SystemBus* getBus();
+
+
         // Write data to bus
         virtual void write(byte data) = 0;
 
         // Read data from bus
-        virtual void read() = 0;
+        virtual void read(long address) = 0;
 
         // Execute IO operation
         virtual byte execute(byte control, byte address, byte data) = 0;

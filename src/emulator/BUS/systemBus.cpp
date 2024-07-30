@@ -77,6 +77,15 @@ void SystemBus::execute(){
 
         memoryModule->execute(control, address, data);
     }
+    else if((control >= DISKSTART) && (control <= DISKEND)){
+        if(diskModule == NULL) {
+            std::cerr << "Disk module not set\n";
+            return;
+        }
+
+        diskModule->execute(control, address, data);
+    }
+    
     else{
         std::cout << "Invalid control signal : " << control << std::endl;
     }
