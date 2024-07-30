@@ -19,7 +19,7 @@ byte Memory::read(long position){
 }
 
 void Memory::write(long position, byte data){
-        if (position >= 0 && position < this->memory.size()) {
+    if (position >= 0 && position < this->memory.size()) {
         this->memory[position] = data;
     } else {
     }
