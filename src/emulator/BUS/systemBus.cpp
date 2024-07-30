@@ -40,12 +40,28 @@ void SystemBus::setCpuModule(ModuleInterface* module){
     this->cpuModule = module;
 }
 
+void SystemBus::setDiskModule(ModuleInterface* module){
+    this->diskModule = module;
+}
+
+void SystemBus::setScreenModule(ModuleInterface* module){
+    this->screenModule = module;
+}
+
 ModuleInterface* SystemBus::getMemoryModule(){
     return this->memoryModule;
 }
 
 ModuleInterface* SystemBus::getCpuModule(){
     return this->cpuModule;
+}
+
+ModuleInterface* SystemBus::getDiskModule(){
+    return this->diskModule;
+}
+
+ModuleInterface* SystemBus::getScreenModule(){
+    return this->screenModule;
 }
 
 void SystemBus::execute(){

@@ -74,6 +74,8 @@ void Cpu::cycle(){
             break;
         }
 
+        // Run IO cycle
+
         pc+=6;
 
     }

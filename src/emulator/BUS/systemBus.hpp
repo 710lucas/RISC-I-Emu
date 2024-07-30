@@ -18,11 +18,26 @@ typedef unsigned char byte;
 #define CPUSTART 0xF3 //CPU start
 #define CPUEND 0xF4 //CPU end
 
-#define MEMWRITE 0xF0 //Bus requesting to write to memory; Bus write to memory
+#define MEMWRITE MEMSTART //Bus requesting to write to memory; Bus write to memory
 #define MEMREAD 0xF1 //Bus requesting to read from memory; Bus read from memory
-#define END_MEMREAD 0xF2
+#define END_MEMREAD MEMEND
 #define CPUREAD 0xF3 //Bus interrupting CPU to read from the BUS; Cpu read from the BUS
 #define CPUWRITE 0xF4  //Bus interrupting CPU to write to the BUS; Bus write to CPU
+
+
+// Info about the IO's DISK instructions
+#define DISKSTART DISKREAD;
+#define DISKEND DISKWRITE;
+
+#define DISKREAD 0xF5 //Bus requesting to read from DISK; Bus read from DISK
+#define DISKWRITE 0xF6 //Bus requesting to write to DISK; Bus write to DISK
+
+// Info about the IO's SCREEN instructions
+#define SCREENSTART SCREENWRITE;
+#define SCREENEND SCREENWRITE;
+
+#define SCREENWRITE 0xF7 //Bus requesting to write to SCREEN; Bus write to SCREEN
+
 
 class SystemBus{
 
@@ -33,6 +48,8 @@ class SystemBus{
 
         ModuleInterface* memoryModule;
         ModuleInterface* cpuModule;
+        ModuleInterface* diskModule;
+        ModuleInterface* screenModule;
 
     public:
         SystemBus();
@@ -45,9 +62,13 @@ class SystemBus{
 
         void setMemoryModule(ModuleInterface* module);
         void setCpuModule(ModuleInterface* module);
+        void setDiskModule(ModuleInterface* module);
+        void setScreenModule(ModuleInterface* module);
 
         ModuleInterface* getMemoryModule();
         ModuleInterface* getCpuModule();
+        ModuleInterface* getDiskModule();
+        ModuleInterface* getScreenModule();
 
         void execute();
 
