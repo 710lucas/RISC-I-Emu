@@ -34,10 +34,15 @@ typedef unsigned char byte;
 #define DISKEND DISKWRITE
 
 // Info about the IO's SCREEN instructions
-#define SCREENSTART SCREENWRITE
-#define SCREENEND SCREENWRITE
-
-#define SCREENWRITE 0xF7 //Bus requesting to write to SCREEN; Bus write to SCREEN
+#define SETCRDX  0xF7 //Setting X coordinate to display
+#define SETCRDY  0xF8 //Setting Y coordinate to display
+#define PXDSPL   0xF9 //Displaying pixel
+#define TXTDSPL  0xFA //Displaying text
+#define CLRDSPL  0xFB //Clearing display
+#define CLRPXL   0xFC //Clearing pixel   
+#define PRNTDSPL 0xFD //Printing display
+#define SCREENSTART SETCRDX
+#define SCREENEND PRNTDSPL
 
 
 class SystemBus{
@@ -50,7 +55,7 @@ class SystemBus{
         ModuleInterface* memoryModule;
         ModuleInterface* cpuModule;
         ModuleInterface* diskModule;
-        ModuleInterface* screenModule;
+        ModuleInterface* displayModule;
 
     public:
         SystemBus();
@@ -64,7 +69,7 @@ class SystemBus{
         void setMemoryModule(ModuleInterface* module);
         void setCpuModule(ModuleInterface* module);
         void setDiskModule(ModuleInterface* module);
-        void setScreenModule(ModuleInterface* module);
+        void setDisplayModule(ModuleInterface* module);
 
         ModuleInterface* getMemoryModule();
         ModuleInterface* getCpuModule();

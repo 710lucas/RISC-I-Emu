@@ -5,6 +5,7 @@
 #include "./emulator/memory/memory.hpp"
 #include "./emulator/BUS/systemBus.hpp"
 #include "./emulator/IO/disk/disk.hpp"
+#include "./Emulator/IO/display/display.hpp"
 #include <cstring>
 
 typedef unsigned char byte;
@@ -32,6 +33,9 @@ int main(int argc, char* argv[]){
 
         Disk* disk = new Disk(*bus); 
         bus->setDiskModule(disk);
+
+        Display* display = new Display(*bus);
+        bus->setDisplayModule(display);
 
         Cpu* cpu = new Cpu(*bus);
 

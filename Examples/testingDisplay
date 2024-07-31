@@ -1,0 +1,88 @@
+//Adding FD to register 0
+//FD: print display
+ADD 0xFFFD 0xFF00 0x0000
+
+//Telling bus to print display
+//0xFF000 -> no address lane
+//0xFF000 -> no data lane
+//0x0000  -> control = register[0]
+WBUS 0xFF00 0xFF00 0x0000
+
+//Adding F9 to register 1
+//F9: Display pixel
+ADD 0xFFF9 0xFF00 0x0001
+
+//Telling bus to add pixel to display
+WBUS 0xFF00 0xFF00 0x0001
+
+//Telling bus to print the display again
+//this will show the pixel in the coordinates (0,0)
+WBUS 0xFF00 0xFF00 0x0000
+
+
+//I'll write RISC-I in memory, letter by letter
+
+//Adding R to register 2
+//R = 0x52 in ACII
+ADD 0xFF52 0xFF00 0x0002
+
+//Writing R to memory
+STL 0xFFA0 0xFF00 0x0002
+
+
+//Adding I to register 2
+//I = 0x49 in ACII
+ADD 0xFF49 0xFF00 0x0002
+
+//writing I to memory
+STL 0xFFA1 0xFF00 0x0002
+
+
+
+//Adding S to register 2
+//S = 0x53 in ACII
+ADD 0xFF53 0xFF00 0x0002
+
+//writing S to memory
+STL 0xFFA2 0xFF00 0x0002
+
+
+//Adding C to register 2
+//C = 0x43 in ACII
+ADD 0xFF43 0xFF00 0x0002
+
+//writing C to memory
+STL 0xFFA3 0xFF00 0x0002
+
+
+//Adding - to register 2
+//- = 0x2D in ACII
+ADD 0xFF2D 0xFF00 0x0002
+
+//writing - to memory
+STL 0xFFA4 0xFF00 0x0002
+
+
+//Adding I to register 2
+//I = 0x49 in ACII
+ADD 0xFF49 0xFF00 0x0002
+
+//writing I to memory
+STL 0xFFA5 0xFF00 0x0002
+
+
+
+//Adding instruction to display text
+//in register 3
+ADD 0xFFFA 0xFF00 0x0003
+
+//Size of the text: 6 -> 0xFF01
+//Address of text: 0xFFA0
+//Control: 0x0003
+WBUS 0xFF06 0xFFA0 0x0003
+
+//Telling bus to print the display again
+//this will print the text in the coordinates (0,0)
+WBUS 0xFF00 0xFF00 0x0000
+
+STP 0x0000 0x0000 0x0000
