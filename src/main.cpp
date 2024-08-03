@@ -34,10 +34,16 @@ int main(int argc, char* argv[]){
         Disk* disk = new Disk(*bus); 
         bus->setDiskModule(disk);
 
+        std::cout<<"Inicializando janela\n";
+
+
+        std::cout<<"janela inicializada\n";
+
         Display* display = new Display(*bus);
         bus->setDisplayModule(display);
 
         Cpu* cpu = new Cpu(*bus);
+
 
         char* filePath = argv[2];
         std::ifstream file(filePath, std::ios::binary);
@@ -67,7 +73,26 @@ int main(int argc, char* argv[]){
 
         file.close();
 
-        cpu->cycle();
+        std::cout<<"Tudo inicializado certo\n";
+
+        SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+        InitWindow(64, 64, "RISC-I Emulator");
+
+        int result = 0;
+
+        ClearBackground(WHITE);
+        while(!WindowShouldClose()){
+
+            if(result == 0){
+                result = cpu->cycle();
+            }
+
+            display->displayLoop();
+
+        }
+
+        CloseWindow();
+
     }
 
 

@@ -4,12 +4,22 @@
 #include "../../BUS/systemBus.hpp"
 #include <vector>
 #include <iostream>
+#include "raylib.h"
+
+struct Text{
+    std::string text;
+    int x;
+    int y;
+};
+
 
 class Display : public IOInterface{
 
     private:  
         //Display characters (vector)
         std::vector<std::vector<std::string>> displayBuffer;
+        std::vector<Rectangle> displayRects;
+        std::vector<Text> displayTexts;
 
         int x = 0;
         int y = 0;
@@ -18,7 +28,7 @@ class Display : public IOInterface{
         std::string emptyChar = ".";
 
     public:
-        Display(SystemBus &bus);
+        Display(SystemBus &bus); 
 
         void displayText(byte address, byte size);
 
@@ -42,5 +52,7 @@ class Display : public IOInterface{
 
         //Print display
         void printDisplay();
+
+        void displayLoop();
 
 };

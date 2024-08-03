@@ -52,6 +52,6 @@ public:
     void loadIntoMemory(byte toLoad[]);
     byte getOperandValue(byte lower, byte higher);
     int executeInstruction(byte instruction);
-    void cycle();
+    int cycle();
 };
 
