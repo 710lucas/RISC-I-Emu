@@ -1,6 +1,6 @@
 [Portuguese](README-pt.md)    
 
-[RISC-I Compiler](https://710lucas.github.io/RISC-I-Compiler-web/public/)
+[RISC-I Compiler](https://github.com/710lucas/RISC-I-Compiler-web)
 
 [Reference book: Design and Implementation of RISC I](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1982/CSD-82-106.pdf)
 
