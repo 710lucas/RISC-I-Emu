@@ -51,9 +51,9 @@ Cpu::Cpu(SystemBus &bus) : bus (bus){
     Cpu();
 }
 
-void Cpu::cycle(){
+int Cpu::cycle(){
 
-    while(true){
+    // Maybe put this in main
 
 
         this->bus.writeControl(MEMREAD);
@@ -65,13 +65,13 @@ void Cpu::cycle(){
 
         if(instruction == NULL){
             std::cerr<<"Invalid instruction" << static_cast<int>(instruction) << "\n";
-            break;
+            return -1;
         }
 
         int result = executeInstruction(instruction);
 
         if(result == 1){
-            break;
+            return 1;
         }
 
         this->bus.execute();
@@ -80,7 +80,7 @@ void Cpu::cycle(){
 
         pc+=6;
 
-    }
+        return 0;
 
 }
 

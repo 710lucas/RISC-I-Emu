@@ -44,8 +44,8 @@ void SystemBus::setDiskModule(ModuleInterface* module){
     this->diskModule = module;
 }
 
-void SystemBus::setScreenModule(ModuleInterface* module){
-    this->screenModule = module;
+void SystemBus::setDisplayModule(ModuleInterface* module){
+    this->displayModule = module;
 }
 
 ModuleInterface* SystemBus::getMemoryModule(){
@@ -61,7 +61,7 @@ ModuleInterface* SystemBus::getDiskModule(){
 }
 
 ModuleInterface* SystemBus::getScreenModule(){
-    return this->screenModule;
+    return this->displayModule;
 }
 
 void SystemBus::execute(){
@@ -85,9 +85,18 @@ void SystemBus::execute(){
 
         diskModule->execute(control, address, data);
     }
+
+    else if((control >= SCREENSTART) && (control <= SCREENEND)){
+    if(displayModule == NULL) {
+            std::cerr << "Display module not set\n";
+            return;
+        }
+
+        displayModule->execute(control, address, data);
+    }
     
     else{
-        std::cout << "Invalid control signal : " << control << std::endl;
+        std::cout << "Invalid control signal : " << static_cast<int>(control) << std::endl;
     }
 
 }
