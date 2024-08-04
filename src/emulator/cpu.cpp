@@ -71,7 +71,6 @@ int Cpu::cycle(){
         int result = executeInstruction(instruction);
 
         if(result == 1){
-            std::cout<<"Finished\n";
             return 1;
         }
 
