@@ -50,9 +50,6 @@ class Display : public IOInterface{
         //Execute IO operation
         virtual byte execute(byte control, byte address, byte data) override;
 
-        //Print display
-        void printDisplay();
-
         void displayLoop();
 
 };

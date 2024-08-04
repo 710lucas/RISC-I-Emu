@@ -89,16 +89,11 @@ byte Display::execute(byte control, byte address, byte data){
         case CLRPXL:
             clearPixel();
             break;
-        case PRNTDSPL:
-            printDisplay();
-            break;
     }
 
     return 0;
 }
 
-void Display::printDisplay(){
-}
 
 void Display::displayLoop(){
     ClearBackground(WHITE);

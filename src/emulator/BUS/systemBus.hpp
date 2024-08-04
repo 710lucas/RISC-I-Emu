@@ -40,9 +40,8 @@ typedef unsigned char byte;
 #define TXTDSPL  0xFA //Displaying text
 #define CLRDSPL  0xFB //Clearing display
 #define CLRPXL   0xFC //Clearing pixel   
-#define PRNTDSPL 0xFD //Printing display
 #define SCREENSTART SETCRDX
-#define SCREENEND PRNTDSPL
+#define SCREENEND CLRPXL
 
 
 class SystemBus{
