@@ -16,16 +16,12 @@ struct Text{
 class Display : public IOInterface{
 
     private:  
-        //Display characters (vector)
-        std::vector<std::vector<std::string>> displayBuffer;
         std::vector<Rectangle> displayRects;
         std::vector<Text> displayTexts;
 
         int x = 0;
         int y = 0;
 
-        int displaySize = 64;
-        std::string emptyChar = ".";
 
     public:
         Display(SystemBus &bus); 

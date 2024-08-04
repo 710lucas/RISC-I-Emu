@@ -1,8 +1,6 @@
 #include "display.hpp"
-#include "../../../fonts/roboto.h"
 
 Display::Display(SystemBus &bus) : IOInterface(bus){
-    // this->displayBuffer = std::vector<std::vector<std::string>>(window.getSize().y, std::vector<std::string>(window.getSize().x, emptyChar));
 }
 
 void Display::write(byte data){
@@ -23,18 +21,9 @@ void Display::displayText(byte address, byte size){
 
     this->displayTexts.push_back({text, x, y});
 
-    std::cout<<"Displaying text\n";
-
 }
 
 void Display::displayPixel(){
-    // sf::RectangleShape pixel(sf::Vector2f(1, 1));
-    // pixel.setFillColor(sf::Color::White);
-    // pixel.setPosition(x, y);
-    // window.draw(pixel);
-    // this->displayBuffer[y][x] = "X";
-
-    std::cout<<"Displaying pixel\n";
 
     Rectangle pixel = {x, y, 1, 1};
 
@@ -43,7 +32,6 @@ void Display::displayPixel(){
 
 void Display::clearDisplay(){
     ClearBackground(WHITE);
-    // this->displayBuffer = std::vector<std::vector<std::string>>(window.getSize().y, std::vector<std::string>(window.getSize().x, emptyChar));
 }
 
 void Display::clearPixel(){
@@ -58,7 +46,6 @@ void Display::clearPixel(){
         }
     }
 
-    // this->displayBuffer[y][x] = emptyChar;
 }
 
 void Display::setX(int x){

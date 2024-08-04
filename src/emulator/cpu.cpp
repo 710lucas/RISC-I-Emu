@@ -80,7 +80,6 @@ int Cpu::cycle(){
         // Run IO cycle
 
         pc+=6;
-        std::cout<<"Cycle\n";
 
         return 0;
 
