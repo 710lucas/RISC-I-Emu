@@ -63,8 +63,8 @@ int Cpu::cycle(){
         byte instruction = this->bus.readData();
 
 
-        if(instruction == NULL){
-            std::cerr<<"Invalid instruction" << static_cast<int>(instruction) << "\n";
+        if(instruction == 0){
+            std::cerr<<"Invalid instruction\n" << "PC: "<< pc << "\n";
             return -1;
         }
 
