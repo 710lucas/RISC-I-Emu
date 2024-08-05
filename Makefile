@@ -12,17 +12,16 @@ CFLAGS := -Wall -Wextra
 
 ifeq ($(DETECTED_OS), Windows)
     LDFLAGS := -lraylib -lgdi32 -lwinmm
-    RM := del /Q
+    RM := rm .\Emulator.exe
 
 else ifeq ($(DETECTED_OS), Linux)
     LDFLAGS := -lraylib
-    RM := rm -rf
+    RM := rm Emulator
 endif
 
-CFLAGS := $(foreach src,$(SRCS),-c $(src))
 # Define o alvo padrão
 all:
 	g++ $(SRCS) $(CFLAGS) -g -o Emulator $(LDFLAGS) 
 
 clean: 
-	$(RM) Emulator
+	$(RM) 

@@ -48,6 +48,10 @@ void SystemBus::setDisplayModule(ModuleInterface* module){
     this->displayModule = module;
 }
 
+void SystemBus::setKeyboardModule(ModuleInterface* module){
+    this->keyboardModule = module;
+}
+
 ModuleInterface* SystemBus::getMemoryModule(){
     return this->memoryModule;
 }
@@ -62,6 +66,10 @@ ModuleInterface* SystemBus::getDiskModule(){
 
 ModuleInterface* SystemBus::getScreenModule(){
     return this->displayModule;
+}
+
+ModuleInterface* SystemBus::getKeyboardModule(){
+    return this->keyboardModule;
 }
 
 void SystemBus::execute(){
@@ -87,12 +95,21 @@ void SystemBus::execute(){
     }
 
     else if((control >= SCREENSTART) && (control <= SCREENEND)){
-    if(displayModule == NULL) {
+        if(displayModule == NULL) {
             std::cerr << "Display module not set\n";
             return;
         }
 
         displayModule->execute(control, address, data);
+    }
+
+    else if((control >= KEYSTART) && (control <= KEYEND)){
+        if(keyboardModule == NULL) {
+            std::cerr << "Keyboard module not set\n";
+            return;
+        }
+
+        keyboardModule->execute(control, address, data);
     }
     
     else{

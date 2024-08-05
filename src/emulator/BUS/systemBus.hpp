@@ -43,6 +43,12 @@ typedef unsigned char byte;
 #define SCREENSTART SETCRDX
 #define SCREENEND CLRPXL
 
+// Info about the IO's KEYBOARD instructions
+#define KEYREAD 0xFD //Bus requesting to read from KEYBOARD; Bus read from KEYBOARD
+#define KEYWRITE 0xFE //KEYBOARD has written to BUS
+#define KEYSTART KEYREAD
+#define KEYEND KEYWRITE
+
 
 class SystemBus{
 
@@ -55,6 +61,7 @@ class SystemBus{
         ModuleInterface* cpuModule;
         ModuleInterface* diskModule;
         ModuleInterface* displayModule;
+        ModuleInterface* keyboardModule;
 
     public:
         SystemBus();
@@ -69,11 +76,13 @@ class SystemBus{
         void setCpuModule(ModuleInterface* module);
         void setDiskModule(ModuleInterface* module);
         void setDisplayModule(ModuleInterface* module);
+        void setKeyboardModule(ModuleInterface* module);
 
         ModuleInterface* getMemoryModule();
         ModuleInterface* getCpuModule();
         ModuleInterface* getDiskModule();
         ModuleInterface* getScreenModule();
+        ModuleInterface* getKeyboardModule();
 
         void execute();
 

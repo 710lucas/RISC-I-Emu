@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <cstdint>
 #include <iostream>
+#include <limits.h>
 #include "./BUS/bus_module/busModule.hpp"
 #include "./stack/stack.h"
 #include "./BUS/systemBus.hpp"
@@ -20,8 +21,8 @@ private:
 
     long pc = 0;
 
-    const int maxValue = (1 << (sizeof(int) * 8 - 1)) - 1;
-    const int minValue = -(1 << (sizeof(short) * 8 - 1));
+    const long maxValue = INT_MAX;
+    const long minValue = INT_MIN;
 
     Stack stack = Stack();
 
