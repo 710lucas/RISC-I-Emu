@@ -16,20 +16,32 @@ ADD 0xFF01 0x0500 0x05
 
 // 5th instruction
 // Jumping if register 5 is 1
-// Jumping to 8th instruction 
-// byte 36 -> 0x2A
+// Jumping to 10th instruction 
+// byte 54 -> 0x36
 // So we skip the print function if 
 // no key was pressed
-JMP 0xFF2A 0xFF00 0x05
+JMP 0xFF36 0xFF00 0x05
 
 //6th instruction
 //SUB 1 to print the actual value
 SUB 0x0500 0xFF01 0x05
 
 //7th instruction
+//Printing the key that was pressed
 PRNT 0xFF00 0xFF00 0x05
 
 //8th instruction
+//Reseting pressed Key to 0 so we won't
+//print the same key forever
+//Setting the instruction to the register 6
+ADD 0xFFFE 0xFF00 0x06
+
+//9th instruction
+//Writing the instruction and 
+//the data (data = 0) to the bus
+WBUS 0xFF00 0xFF00 0x06
+
+//10th instruction
 //Jumping to 1st(byte 0 -> 0x00) instruction
 CALL 0xFF00 0xFF00 0x09
 
