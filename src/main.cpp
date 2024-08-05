@@ -6,6 +6,7 @@
 #include "./emulator/BUS/systemBus.hpp"
 #include "./emulator/IO/disk/disk.hpp"
 #include "./Emulator/IO/display/display.hpp"
+#include "./emulator/IO/keyboard/keyboard.hpp"
 #include <cstring>
 
 typedef unsigned char byte;
@@ -34,13 +35,11 @@ int main(int argc, char* argv[]){
         Disk* disk = new Disk(*bus); 
         bus->setDiskModule(disk);
 
-        std::cout<<"Inicializando janela\n";
-
-
-        std::cout<<"janela inicializada\n";
-
         Display* display = new Display(*bus);
         bus->setDisplayModule(display);
+
+        Keyboard* keyboard = new Keyboard(*bus);
+        bus->setKeyboardModule(keyboard);
 
         Cpu* cpu = new Cpu(*bus);
 
@@ -73,8 +72,6 @@ int main(int argc, char* argv[]){
 
         file.close();
 
-        std::cout<<"Tudo inicializado certo\n";
-
         SetConfigFlags(FLAG_WINDOW_RESIZABLE);
         InitWindow(64, 64, "RISC-I Emulator");
 
@@ -82,6 +79,8 @@ int main(int argc, char* argv[]){
 
         ClearBackground(WHITE);
         while(!WindowShouldClose()){
+
+            keyboard->keyboardLoop();
 
             if(result == 0){
                 result = cpu->cycle();

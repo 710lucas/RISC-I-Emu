@@ -132,6 +132,10 @@ int Cpu::executeInstruction(byte instruction){
     {
         case ADD:
         case ADDC:
+            // std::cout<<"\n";
+            // std::cout<<"ADD: \n";
+            // std::cout<<"First value: "<<static_cast<int>(firstVal)<<"\n";
+            // std::cout<<"Second value: "<<static_cast<int>(secondVal)<<"\n";
             correctValue = byteToInt(firstVal)+byteToInt(secondVal);
 
             if(instruction == ADDC && correctValue > maxValue){
@@ -181,19 +185,19 @@ int Cpu::executeInstruction(byte instruction){
         case LDL:
         case STL:
             memory_location = byteToInt(firstVal)+byteToInt(secondVal);
+            // std::cout<<"Memory location: "<<static_cast<int>(memory_location)<<"\n";
             if(instruction == LDL){
                 this->bus.writeControl(MEMREAD);
                 this->bus.writeAddress(memory_location);
                 this->bus.execute();
 
                 byte loadedValue = this->bus.readData();
-
-                if(loadedValue == NULL){
-                    std::cerr<<"Invalid memory location\n";
-                    break;
-                }
+                // std::cout<<"Loaded value: "<<static_cast<int>(loadedValue)<<"\n";
+                // std::cout<<"register: "<<thirdOp<<"\n";
 
                 registers[thirdOp] = loadedValue;
+
+                // std::cout<<"Register value: "<<registers[thirdOp]<<"\n";
             }
             else if(instruction == STL){
                 this->bus.writeControl(MEMWRITE);
@@ -259,8 +263,13 @@ int Cpu::executeInstruction(byte instruction){
 
 
 byte Cpu::getOperandValue(byte lower, byte higher){
+    // std::cout<<"\ngetOperandValue\n";
+    // std::cout<<"Lower: "<<static_cast<int>(lower)<<"\n";
+    // std::cout<<"Higher: "<<static_cast<int>(higher)<<"\n";
     if(lower >= operandCap)
         return higher;
+    // std::cout<<"Retrieving value from register: "<<static_cast<int>(lower)<<"\n";
+    // std::cout<<"Value: "<<static_cast<int>(registers[lower])<<"\n\n";
     return registers[lower];
 
 }

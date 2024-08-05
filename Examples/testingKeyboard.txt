@@ -1,0 +1,38 @@
+//1st instruction
+//Reading from keyboard module
+ADD 0xFFFD 0xFF00 0x04
+
+//Telling keyboard to store info
+//at 0xFFA0 in memory
+WBUS 0xFF00 0xFFA0 0x04
+
+//Reading from memory and storing in register 5
+LDL 0xFFA0 0xFF00 0x05
+
+//4th instruction
+//Adding 1 to register 5 so 
+//we can jump if no key was pressed
+ADD 0xFF01 0x0500 0x05
+
+// 5th instruction
+// Jumping if register 5 is 1
+// Jumping to 8th instruction 
+// byte 36 -> 0x2A
+// So we skip the print function if 
+// no key was pressed
+JMP 0xFF2A 0xFF00 0x05
+
+//6th instruction
+//SUB 1 to print the actual value
+SUB 0x0500 0xFF01 0x05
+
+//7th instruction
+PRNT 0xFF00 0xFF00 0x05
+
+//8th instruction
+//Jumping to 1st(byte 0 -> 0x00) instruction
+CALL 0xFF00 0xFF00 0x09
+
+STP 0x0000 0x0000 0x0000
+
+    
