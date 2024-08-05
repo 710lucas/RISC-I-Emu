@@ -41,8 +41,5 @@ byte Keyboard::execute(byte control, byte address, byte data){
 
 void Keyboard::keyboardLoop(){
     int pressedKey = GetKeyPressed();
-    if(pressedKey != 0){
-        std::cout<<"Key pressed: "<<static_cast<int>(pressedKey)<<std::endl;
-    }
     this->pressedKey = pressedKey;
 }
