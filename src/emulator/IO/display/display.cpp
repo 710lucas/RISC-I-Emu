@@ -6,7 +6,7 @@ Display::Display(SystemBus &bus) : IOInterface(bus){
 void Display::write(byte data){
 }
 
-void Display::read(long address){
+void Display::read(int data, long address){
 }
 
 void Display::displayText(byte address, byte size){

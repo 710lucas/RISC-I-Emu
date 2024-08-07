@@ -41,7 +41,7 @@ class Display : public IOInterface{
         virtual void write(byte data) override;
 
         //Read from display
-        virtual void read(long address) override;
+        virtual void read(int data, long address) override;
 
         //Execute IO operation
         virtual byte execute(byte control, byte address, byte data) override;

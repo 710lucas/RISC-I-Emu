@@ -24,7 +24,7 @@ class IOInterface : public ModuleInterface{
         virtual void write(byte data) = 0;
 
         // Read data from bus
-        virtual void read(long address) = 0;
+        virtual void read(int data, long address) = 0;
 
         // Execute IO operation
         virtual byte execute(byte control, byte address, byte data) = 0;
