@@ -239,6 +239,10 @@ int Cpu::executeInstruction(byte instruction){
             break;
 
         case RBUS:
+            std::cout<<"data register: "<<static_cast<int>(firstVal)<<"\n";
+            std::cout<<"Data: "<<static_cast<int>(bus.readData())<<"\n";
+            std::cout<<"address register: "<<static_cast<int>(secondVal)<<"\n";
+            std::cout<<"control register: "<<static_cast<int>(thirdOp)<<"\n";
             registers[firstVal] = byteToInt(bus.readData());
             registers[secondVal] = byteToInt(bus.readAddress());
             registers[thirdOp] = byteToInt(bus.readControl());

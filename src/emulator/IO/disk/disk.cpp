@@ -17,7 +17,7 @@ Disk::Disk(SystemBus &bus) : IOInterface(bus){
 
 void Disk::write(byte data){
 
-    const long lineNumber = this->getBus()->readAddress();
+    const long bytePosition = this->getBus()->readAddress();
 
 
     /*
@@ -28,71 +28,59 @@ void Disk::write(byte data){
         We can't edit a specific line with std::ofstream
     */
 
-    //Preparing to read file
-    std::ifstream readingFile("disk.txt");
-    std::vector<std::string> lines;
-    std::string line;
+    //Making sure the file exists
+    std::ofstream file("disk.bin", std::ios::binary | std::ios::app);
+    file.close();
 
-    //Reading file
-    if(readingFile.is_open()){
-        while(std::getline(readingFile, line)){
-            lines.push_back(line);
-        }
-        readingFile.close();
+    //Opening file for writing
+    std::ofstream writingFile("disk.bin", std::ios::binary | std::ios::in | std::ios::out);
+
+    if(!writingFile.is_open()){
+         std::cout << "Unable to open file\n";
+         return;
     }
 
-    //Adding empty lines if the file is too short
-    while(lines.size() <= lineNumber){
-        lines.push_back("");
-    }
+    //move the file pointer to the desired line
+    writingFile.seekp(bytePosition, std::ios::beg);
 
-    //Editing the line
-    lines[lineNumber] = std::to_string(static_cast<int>(data));
-
-
-    std::ofstream file("disk.txt");
-
-    //Rewriting to file
-    std::ofstream writingFile("disk.txt");
-
-    if(writingFile.is_open()){
-        for(const auto& line: lines){
-            writingFile << line << "\n";
-        }
-        writingFile.close();
-    } 
-
-    else {
-        std::cout << "Unable to open file\n";
-    }
+    //write the byte
+    writingFile.write(reinterpret_cast<const char *>(&data), sizeof(byte));
+    writingFile.close();
 
 }
 
-void Disk::read(long address){
+void Disk::read(int memAddress, long diskAddress){
 
-    std::ifstream file("disk.txt");
+    byte readData;
 
-    if(file.is_open()){
-        std::string line;
-        int currentLine = 0;
-        while(std::getline(file, line)){
-            if(currentLine == address){
-                this->getBus()->writeData(static_cast<byte>(std::stoi(line)));
-                break;
-            }
-            currentLine++;
-        }
-        file.close();
-    } else {
+    std::ifstream file("disk.bin", std::ios::binary);
+
+    if(!file.is_open()){
         std::cout << "Unable to open file\n";
+        return;
     }
+
+    //move the file pointer to the desired line
+    file.seekg(diskAddress, std::ios::beg);
+
+    //read the byte
+    file.read(reinterpret_cast<char *>(&readData), sizeof(byte));
+
+    //Sending data to the memory address requested by data
+    this->getBus()->writeData(readData);
+    this->getBus()->writeControl(MEMWRITE);
+    this->getBus()->writeAddress(memAddress);
+    this->getBus()->execute();
+
+
+    file.close();
 
 }
 
 
 byte Disk::execute(byte control, byte address, byte data){
     if(control == DISKREAD){
-        this->read(address);
+        this->read(data, address);
         this->getBus()->writeControl(DISKEND);
     }
     else if(control == DISKWRITE){

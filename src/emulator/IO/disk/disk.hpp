@@ -26,7 +26,7 @@ class Disk : public IOInterface{
         virtual void write(byte data) override;
 
         //Read from DISK
-        virtual void read(long address) override;
+        virtual void read(int memAddress, long diskAddress) override;
 
         //Execute IO operation  
         virtual byte execute(byte control, byte address, byte data) override;

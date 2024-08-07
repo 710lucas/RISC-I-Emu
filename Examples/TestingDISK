@@ -1,20 +1,56 @@
-//Adding 0xF6 to register 0
-//0xF6 is the instruction to Write to disk
-ADD 0xFFF6 0XFF00 0x0000
 
-//Debug: printing value in register 9
-PRNT 0x0000 0x0000 0x0000
+//==================================================
+//   _____  _____  _____  _____    _____ 
+//  |  __ \|_   _|/ ____|/ ____|  |_   _|
+//  | |__) | | | | (___ | |   ______| |  
+//  |  _  /  | |  \___ \| |  |______| |  
+//  | | \ \ _| |_ ____) | |____    _| |_ 
+//  |_|  \_\_____|_____/ \_____|  |_____|
+//==================================================
 
-//Writing the instruction 0xF6 (stored in register 0) to the bus
-//Writing the data that will be written: 0x0A
-//writing the address (line) in which the data will be written: 0x01 (line 2)
-//Remember, the first line is 0
-WBUS 0xff0A 0xff01 0x0000
+//=====================================
+//  This an example of a program that will write and read from disk
+//
+//   Author: 710Lucas
+//=====================================
 
-//Writing the instruction 0xF6 (stored in register 0) to the bus
-//Writing the data that will be written: 0x01
-//writing the address (line) in which the data will be written: 0x09 (line 10)
-WBUS 0xFF01 0xFF09 0x0000
 
-//Stopping the program
-STP 0x0000 0x0000 0x0000
+
+//Setting instruction write disk to register 0
+ADD 0xFFF6 0xFF00 0x00
+
+
+
+//Setting instruction read from disk to register 1
+ADD 0xFFF5 0xFF00 0x01
+
+//Telling the bus to write 0x0A to 0x00 in disk
+WBUS 0xFF0A 0xFF00 0x00
+
+
+//Telling the bus to write 0x01 to 0x01 in disk
+WBUS 0xFF01 0xFF01 0x00
+
+//Telling the bus to read from disk in byte 0x00
+//And storing the read value in 0xFA
+WBUS 0xFFFA 0xFF00 0x01
+
+//Telling the bus to read from disk in byte 0x01
+//And storing the read value in 0xFB
+WBUS 0xFFFB 0xFF01 0x01
+
+//Loading the read value on register 0x02
+LDL 0xFFFA 0xFF00 0x02
+
+//Loading the read value on register 0x03
+LDL 0xFFFB 0xFF00 0x03
+
+//Printing the value on register 0x02
+//Should be 10 (0x0A)
+PRNT 0x0000 0x0000 0x02
+
+//Printing the value on register 0x03
+//Should be 1 (0x01)
+PRNT 0x0000 0x0000 0x03
+
+STP 0x0000 0x0000 0x00

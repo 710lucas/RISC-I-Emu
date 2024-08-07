@@ -11,7 +11,7 @@ void Keyboard::write(byte data){
     //Does nothing
 }
 
-void Keyboard::read(long address){
+void Keyboard::read(int data, long address){
     //Read from keyboard
     //Does nothing
 }
