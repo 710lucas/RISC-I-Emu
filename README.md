@@ -10,6 +10,15 @@
 
 This project was created with the purpose of delving deeper into the knowledge of RISC-I opcodes. It has not been extensively tested and may present numerous issues, so do not consider this project as a faithful emulation of the RISC-I proposed by David A. Patterson. Not only is it incomplete, but it also contains decisions made by me that fundamentally differ from the original RISC-I model proposed.
 
+## How to run it
+
+Download the latest [release](https://github.com/710lucas/RISC-I-Emu/releases) and then execute the following command:
+`./Emulator --file filename.bin`
+
+## How to build it
+
+Make sure you have C++, make and raylib installed, clone the repository and run `make`
+
 ## Simple Documentation
 
 Most instructions have the following characteristics:
@@ -44,7 +53,7 @@ Op1: first operand, provides the 2 bytes corresponding to the first operand
 
 Op2: second operand, provides the 2 bytes corresponding to the second operand
 
-Op3: third operand, provides the byte corresponding to the third operand
+Op3: third operand, provides the byte corresponding to the third operand. **Is always a register**
 <br>
 
 a: Value in Op1 (can be either a value in a register or a direct value)
@@ -169,4 +178,25 @@ b: Value in Op2 (can be either a value in a register or a direct value)
   - This is used to debug pring the value stored on the register referenced by `op3`
   - Use this while the emulator isn't finished
   - `print(registers[op3]`
+    
+---
+- RBUS (0x20), Read from bus
+  - 
+  - Use this to read the values on the bus lanes
+  - the value in the `data lane` will be stored in `register[a]`
+  - the value in the `address lane` will be stored in `register[b]`
+  - the value in the `command lane` will be stored in `op3`
+ 
 
+---
+- WBUS (0x21), Write to the bus
+  - 
+  - Use this to write values on the bus lanes
+  - the `a` value will be writen to the `data lane`
+  - the `b` value will be writen to the `address lane`
+  - the `op3` value will be writen to the `command lane`
+ 
+---
+- STP (0x30), Stop
+  - 
+  - Stops the execution
