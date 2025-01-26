@@ -122,6 +122,16 @@ int Cpu::executeInstruction(byte instruction){
     this->bus.execute();
     thirdOp = this->bus.readData() & 0xFF;
 
+    /*
+        VALUES
+        ======
+
+        * Firstval and secondVal can be value stored in a given register
+        * read the overall documentation on github
+        
+        * ThirdOp is always just the index number for the register you want
+    */
+
     byte firstVal = getOperandValue(firstOpLower, firstOpHigher);
     byte secondVal = getOperandValue(secondOpLower, secondOpHigher);
 
@@ -130,6 +140,21 @@ int Cpu::executeInstruction(byte instruction){
 
     switch (instruction)
     {
+
+        /*
+            ADD
+            ===
+
+            * Adds two numbers and store them in the given register
+            
+            * Parameters:
+                - Firstval -> number 1
+                - Secondval -> number 2
+                - thirdOp -> number of the register to store the result
+
+            * Operation:
+                - registers[thirdop] = number1 + number2
+        */
         case ADD:
         case ADDC:
             // std::cout<<"\n";
@@ -146,6 +171,22 @@ int Cpu::executeInstruction(byte instruction){
             registers[thirdOp] = correctValue;
             break;
 
+        /*
+            SUB
+            ===
+
+            * Subtracts two numbers and store the result in the given register
+
+            * Parameters:
+                - Firstval -> number1
+                - Secondval -> number2
+                - thirdOp -> number of the register to store the result
+
+            * Operation:
+                - registers[thirdop] = number1 - number2
+            
+        */
+
         case SUB:
         case SUBC:
             correctValue = byteToInt(firstVal)-byteToInt(secondVal);
@@ -158,30 +199,138 @@ int Cpu::executeInstruction(byte instruction){
             registers[thirdOp] = correctValue;
             break;
 
+        /*
+            AND
+            ===
+
+            * Performs an AND operation and store the result in the given register
+
+            * Parameters:
+                - firstVal
+                - secondVal
+                - thirdOp
+
+            * Operation:
+                - registers[thirdop] = firstVal&secondVal
+        
+        */
         case AND:
             registers[thirdOp] = firstVal&secondVal;
             break;
 
+        /*
+            OR
+            ==
+
+            * Performs an OR operation and store the result in the given register
+
+            * Parameters:
+                - firstVal
+                - secondVal
+                - thirdOp
+
+            * Operation:
+                - registers[thirdop] = firstVal|secondVal
+        */
         case OR:
             registers[thirdOp] = firstVal|secondVal;
             break;
 
+        /*
+            XOR
+            ===
+
+            * Performs an XOR operation and store the result in the given register
+
+            * Parameters:
+                - firstVal
+                - secondVal
+                - thirdOp
+
+            * Operation:
+                - registers[thirdop] = firstVal^secondVal
+        */
         case XOR:
             registers[thirdOp] = firstVal^secondVal;
             break;
 
+        /*
+            SLL -> Shift Left Logical
+            =========================
+
+            * Performs a logical shift left
+
+            * Parameters:
+                -  firstVal -> value to be shifted
+                - secondVal -> amount to be shifted
+                - thirdOp   -> Where the result is going to be stored
+
+        */
         case SLL:
             registers[thirdOp] = firstVal << secondVal;
             break;
 
+        /*
+            SRL -> Shift Right Logical
+            ==========================
+
+            * Performs a logical shift right
+
+            * Parameters:
+                -  firstVal -> value to be shifted
+                - secondVal -> amount to be shifted
+                - thirdOp   -> Where the result is going to be stored
+
+        */
         case SRL:
             registers[thirdOp] = firstVal >> secondVal;
             break;
 
+        /*
+            SRA -> Shift Right Arithmetic
+            =============================
+
+            * Performs an arithmetic shift right
+
+            * Parameters:
+                -  firstVal -> value to be shifted
+                - secondVal -> amount to be shifted
+                - thirdOp   -> Where the result is going to be stored
+
+        */
         case SRA:
             registers[thirdOp] = byteToInt(firstVal) >> byteToInt(secondVal);
             break;
 
+        /*
+            LDL -> Load from memory
+            ========================
+
+            * Load a value from memory and store it in a register
+
+            * Parameters:
+                - firstVal -> lower byte of the memory address
+                - secondVal -> higher byte of the memory address
+                - thirdOp -> register to store the value
+
+            * Operation:
+                - memory_location = firstVal + secondVal
+                - registers[thirdOp] = memory[memory_location]
+
+            STL -> Store in memory
+            ======================
+
+            * Store a value in memory
+
+            * Parameters:
+                - firstVal -> lower byte of the memory address
+                - secondVal -> higher byte of the memory address
+                - thirdOp -> register to store the value
+
+            * Operation:
+                - memory_location = firstVal + secondVal
+                - memory[memory_location] = registers[thirdOp]
+        */            
         case LDL:
         case STL:
             memory_location = byteToInt(firstVal)+byteToInt(secondVal);
@@ -207,6 +356,28 @@ int Cpu::executeInstruction(byte instruction){
             }
             break;
 
+
+        /*
+            JMP -> Jump
+            ===========
+
+            * Jump to a given location if the value stored in the register is 1
+
+            * Parameters:
+                - firstVal -> lower byte of the jump address
+                - secondVal -> higher byte of the jump address
+                - thirdOp -> register to check if the jump should be executed
+
+            * Operation:
+                - pc = firstVal + secondVal
+
+            JMPR -> Jump relative
+            =====================
+
+            * Jump to a relative location if the value stored in the register is 1
+
+        */
+
         case JMP:
         case JMPR:
             if(registers[thirdOp] == 1){
@@ -219,6 +390,30 @@ int Cpu::executeInstruction(byte instruction){
             }
             break;
 
+
+        /*
+            CALL -> Call
+            ============
+
+            * Call a function
+
+            * Parameters:
+                - firstVal -> lower byte of the jump address
+                - secondVal -> higher byte of the jump address
+                - thirdOp -> register to store the return address
+
+            * Operation:
+                - registers[thirdOp] = pc
+                - pc = firstVal + secondVal
+                - pc -= 6
+
+            CALLR -> Call relative
+            ======================
+
+            * Call a function relative to the current position
+
+        */
+
         case CALL:
         case CALLR:
             registers[thirdOp] = pc;
@@ -229,14 +424,55 @@ int Cpu::executeInstruction(byte instruction){
             pc-=6;
             break;
 
+        /*
+            RET -> Return
+            =============
+
+            * Return from a function, like a inconditional jump
+
+            * Parameters:
+                - firstVal -> lower byte of the jump address
+                - secondVal -> higher byte of the jump address
+
+            * Operation:
+                - pc = firstVal + secondVal
+                - pc -= 6
+        */
         case RET:
             pc = firstVal+secondVal;
             pc -= 6;
             break;
 
+        /*
+            PRNT -> Print
+            =============
+
+            * This is just used for debug
+            * It prints the value stored on the register
+            *   referenced by the thirdOp
+
+            * Example: std::cout<<registers[thirdOp]<<"\n";
+        */
         case PRNT:
             std::cout<<registers[thirdOp]<<"\n";
             break;
+
+        /*
+            RBUS -> Read from bus
+            ======================
+
+            * Read from the bus
+
+            * Parameters:
+                - firstVal -> data
+                - secondVal -> address
+                - thirdOp -> control
+
+            * Operation:
+                - registers[firstVal] = bus.readData()
+                - registers[secondVal] = bus.readAddress()
+                - registers[thirdOp] = bus.readControl()
+        */
 
         case RBUS:
             registers[firstVal] = byteToInt(bus.readData());
@@ -244,12 +480,34 @@ int Cpu::executeInstruction(byte instruction){
             registers[thirdOp] = byteToInt(bus.readControl());
             break;
 
+        /*
+            WBUS -> Write to bus
+            ====================
+
+            * Write to the bus
+
+            * Parameters:
+                - firstVal -> data
+                - secondVal -> address
+                - thirdOp -> control
+
+            * Operation:
+                - bus.writeData(firstVal)
+                - bus.writeAddress(secondVal)
+                - bus.writeControl(registers[thirdOp])
+        */
         case WBUS:
             bus.writeData(firstVal);
             bus.writeAddress(secondVal);
             bus.writeControl(registers[thirdOp]);
             break;
 
+        /*
+            STP -> Stop
+            ===========
+
+            * Stop the execution
+        */
         case STP:
             return 1;
         
