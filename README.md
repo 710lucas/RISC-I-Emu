@@ -17,7 +17,7 @@ Download the latest [release](https://github.com/710lucas/RISC-I-Emu/releases) a
 
 ## How to build it
 
-Make sure you have C++, make and raylib installed, clone the repository and run `make`
+Make sure you have C++, make and [raylib](https://www.raylib.com/) installed, clone the repository and run `make`
 
 ## Simple Documentation
 
